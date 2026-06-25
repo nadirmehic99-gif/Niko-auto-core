@@ -1,20 +1,402 @@
 [
   {
-    "name": "Niko Admin",
-    "username": "niko",
-    "password": "mafija1",
-    "active": true
+    "name": "Customer 01",
+    "company": "Company 01",
+    "username": "customer01",
+    "password": "Niko1001",
+    "active": true,
+    "notes": ""
   },
   {
-    "name": "Customer 1",
-    "username": "customer1",
-    "password": "price123",
-    "active": true
+    "name": "Customer 02",
+    "company": "Company 02",
+    "username": "customer02",
+    "password": "Niko1002",
+    "active": true,
+    "notes": ""
   },
   {
-    "name": "Customer 2",
-    "username": "customer2",
-    "password": "price456",
-    "active": true
+    "name": "Customer 03",
+    "company": "Company 03",
+    "username": "customer03",
+    "password": "Niko1003",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 04",
+    "company": "Company 04",
+    "username": "customer04",
+    "password": "Niko1004",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 05",
+    "company": "Company 05",
+    "username": "customer05",
+    "password": "Niko1005",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 06",
+    "company": "Company 06",
+    "username": "customer06",
+    "password": "Niko1006",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 07",
+    "company": "Company 07",
+    "username": "customer07",
+    "password": "Niko1007",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 08",
+    "company": "Company 08",
+    "username": "customer08",
+    "password": "Niko1008",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 09",
+    "company": "Company 09",
+    "username": "customer09",
+    "password": "Niko1009",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 10",
+    "company": "Company 10",
+    "username": "customer10",
+    "password": "Niko1010",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 11",
+    "company": "Company 11",
+    "username": "customer11",
+    "password": "Niko1011",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 12",
+    "company": "Company 12",
+    "username": "customer12",
+    "password": "Niko1012",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 13",
+    "company": "Company 13",
+    "username": "customer13",
+    "password": "Niko1013",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 14",
+    "company": "Company 14",
+    "username": "customer14",
+    "password": "Niko1014",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 15",
+    "company": "Company 15",
+    "username": "customer15",
+    "password": "Niko1015",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 16",
+    "company": "Company 16",
+    "username": "customer16",
+    "password": "Niko1016",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 17",
+    "company": "Company 17",
+    "username": "customer17",
+    "password": "Niko1017",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 18",
+    "company": "Company 18",
+    "username": "customer18",
+    "password": "Niko1018",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 19",
+    "company": "Company 19",
+    "username": "customer19",
+    "password": "Niko1019",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 20",
+    "company": "Company 20",
+    "username": "customer20",
+    "password": "Niko1020",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 21",
+    "company": "Company 21",
+    "username": "customer21",
+    "password": "Niko1021",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 22",
+    "company": "Company 22",
+    "username": "customer22",
+    "password": "Niko1022",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 23",
+    "company": "Company 23",
+    "username": "customer23",
+    "password": "Niko1023",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 24",
+    "company": "Company 24",
+    "username": "customer24",
+    "password": "Niko1024",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 25",
+    "company": "Company 25",
+    "username": "customer25",
+    "password": "Niko1025",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 26",
+    "company": "Company 26",
+    "username": "customer26",
+    "password": "Niko1026",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 27",
+    "company": "Company 27",
+    "username": "customer27",
+    "password": "Niko1027",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 28",
+    "company": "Company 28",
+    "username": "customer28",
+    "password": "Niko1028",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 29",
+    "company": "Company 29",
+    "username": "customer29",
+    "password": "Niko1029",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 30",
+    "company": "Company 30",
+    "username": "customer30",
+    "password": "Niko1030",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 31",
+    "company": "Company 31",
+    "username": "customer31",
+    "password": "Niko1031",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 32",
+    "company": "Company 32",
+    "username": "customer32",
+    "password": "Niko1032",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 33",
+    "company": "Company 33",
+    "username": "customer33",
+    "password": "Niko1033",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 34",
+    "company": "Company 34",
+    "username": "customer34",
+    "password": "Niko1034",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 35",
+    "company": "Company 35",
+    "username": "customer35",
+    "password": "Niko1035",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 36",
+    "company": "Company 36",
+    "username": "customer36",
+    "password": "Niko1036",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 37",
+    "company": "Company 37",
+    "username": "customer37",
+    "password": "Niko1037",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 38",
+    "company": "Company 38",
+    "username": "customer38",
+    "password": "Niko1038",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 39",
+    "company": "Company 39",
+    "username": "customer39",
+    "password": "Niko1039",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 40",
+    "company": "Company 40",
+    "username": "customer40",
+    "password": "Niko1040",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 41",
+    "company": "Company 41",
+    "username": "customer41",
+    "password": "Niko1041",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 42",
+    "company": "Company 42",
+    "username": "customer42",
+    "password": "Niko1042",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 43",
+    "company": "Company 43",
+    "username": "customer43",
+    "password": "Niko1043",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 44",
+    "company": "Company 44",
+    "username": "customer44",
+    "password": "Niko1044",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 45",
+    "company": "Company 45",
+    "username": "customer45",
+    "password": "Niko1045",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 46",
+    "company": "Company 46",
+    "username": "customer46",
+    "password": "Niko1046",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 47",
+    "company": "Company 47",
+    "username": "customer47",
+    "password": "Niko1047",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 48",
+    "company": "Company 48",
+    "username": "customer48",
+    "password": "Niko1048",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 49",
+    "company": "Company 49",
+    "username": "customer49",
+    "password": "Niko1049",
+    "active": true,
+    "notes": ""
+  },
+  {
+    "name": "Customer 50",
+    "company": "Company 50",
+    "username": "customer50",
+    "password": "Niko1050",
+    "active": true,
+    "notes": ""
   }
 ]
