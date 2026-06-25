@@ -3,63 +3,45 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>Niko Auto Core USA | Customer Login</title>
+<title>Niko Auto Core USA | Customer Price Search</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
-:root{--card:#141c27;--panel:#080d16;--border:#2a3444;--gold:#e0aa18;--green:#35b84d;--text:#f4f6fb;--muted:#9aa3b2;--red:#ff6b6b}
-*{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#050811,#101725);color:var(--text)}
+:root{--card:#141c27;--panel:#080d16;--border:#2a3444;--gold:#e0aa18;--green:#35b84d;--text:#f4f6fb;--muted:#9aa3b2}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#050811,#101725);color:var(--text)}
 .wrap{max-width:760px;margin:auto;padding:42px 18px 80px}
 h1{text-align:center;font-size:clamp(35px,7vw,58px);margin:35px 0 8px;letter-spacing:1px;font-weight:900}
-.gold{color:var(--gold)} .subtitle{text-align:center;color:var(--muted);font-size:22px;margin-bottom:34px}
+.gold{color:var(--gold)}.subtitle{text-align:center;color:var(--muted);font-size:22px;margin-bottom:34px}
 .card{background:rgba(20,28,39,.96);border:1px solid var(--border);border-radius:24px;padding:28px;margin:22px 0}
+.search-row{display:flex;gap:14px}
 input,button{font-size:22px;border-radius:18px}
-input{width:100%;padding:20px;background:var(--panel);color:var(--text);border:1px solid var(--border);outline:none;margin:8px 0}
-.search-row{display:flex;gap:14px}.search-row input{text-transform:uppercase;margin:0}
+input{width:100%;padding:20px;background:var(--panel);color:var(--text);border:1px solid var(--border);outline:none;text-transform:uppercase}
 button{background:var(--gold);border:0;color:#111;font-weight:900;padding:18px 30px;cursor:pointer}
 .status,footer{color:var(--muted);line-height:1.45}
 .result{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:28px;margin-top:24px;min-height:145px;font-size:22px}
 .code{color:var(--muted);font-size:24px}.price{font-size:78px;color:var(--green);font-weight:900;margin-top:12px}
 .info{background:#101827;border:1px solid #27344a;border-radius:18px;padding:18px;margin-top:24px;color:var(--muted);font-size:20px}
-footer{text-align:center;margin-top:30px}.small{font-size:18px;color:var(--muted)}.error{color:var(--red);font-weight:800}
-.hidden{display:none}.login-title{text-align:center;font-size:30px;color:var(--gold);margin:0 0 15px}.login-card{max-width:560px;margin:45px auto}
-.logout{background:transparent;border:1px solid var(--gold);color:var(--gold);font-size:16px;padding:10px 14px;border-radius:12px;margin-top:18px}
-.welcome{color:var(--gold);font-weight:900}
+footer{text-align:center;margin-top:30px}.small{font-size:18px;color:var(--muted)}
 @media(max-width:620px){.search-row{flex-direction:column}button{width:100%}.price{font-size:58px}.wrap{padding-top:20px}}
 </style>
 </head>
 <body>
 <main class="wrap">
-  <h1><span class="gold">NIKO</span> AUTO CORE USA</h1>
-  <div class="subtitle">Customer Price Search</div>
-
-  <section id="loginSection" class="card login-card">
-    <h2 class="login-title">Customer Login</h2>
-    <p class="status">Enter your username and password.</p>
-    <input id="usernameInput" placeholder="Username" autocomplete="username" />
-    <input id="passwordInput" type="password" placeholder="Password" autocomplete="current-password" />
-    <button onclick="login()">Login</button>
-    <p id="loginMessage" class="status"></p>
-  </section>
-
-  <section id="searchSection" class="card hidden">
-    <p id="welcome" class="welcome"></p>
-    <div class="search-row">
-      <input id="searchInput" placeholder="TYPE CONVERTER CODE..." autocomplete="off" />
-      <button onclick="searchCode()">Search</button>
-    </div>
-    <p id="status" class="status">Loading Live_Market_Price.xlsx...</p>
-    <div id="result" class="result">Type converter code to search.</div>
-    <div class="info">Customers see code and final price only. Market numbers and formulas are not shown on this page.</div>
-    <button class="logout" onclick="logout()">Logout</button>
-  </section>
-
-  <footer>Prices are not hedged. Call Niko Auto Core USA to confirm before sale.</footer>
+<h1><span class="gold">NIKO</span> AUTO CORE USA</h1>
+<div class="subtitle">Customer Price Search</div>
+<section class="card">
+<div class="search-row">
+<input id="searchInput" placeholder="TYPE CONVERTER CODE..." autocomplete="off" />
+<button onclick="searchCode()">Search</button>
+</div>
+<p id="status" class="status">Loading Live_Market_Price.xlsx...</p>
+<div id="result" class="result">Type converter code to search.</div>
+<div class="info">Customers see code and final price only. Market numbers and formulas are not shown on this page.</div>
+</section>
+<footer>Prices are not hedged. Call Niko Auto Core USA to confirm before sale.</footer>
 </main>
-
 <script>
 let priceRows = [];
-let users = [];
-
 function norm(v){return String(v||"").toUpperCase().replace(/[\s\-_./]/g,"");}
 function cleanPrice(v){
   let s = String(v ?? "").trim();
@@ -68,54 +50,7 @@ function cleanPrice(v){
   if(Number.isFinite(n)) return "$" + Math.round(n).toLocaleString();
   return s;
 }
-
-async function loadUsers(){
-  try{
-    const res = await fetch("users.json?cache=" + Date.now());
-    if(!res.ok) throw new Error("users.json not found");
-    users = await res.json();
-  }catch(e){
-    users = [
-      {"username":"niko","password":"mafija1","name":"Niko Admin","active":true},
-      {"username":"customer1","password":"price123","name":"Customer 1","active":true}
-    ];
-  }
-}
-
-async function login(){
-  if(!users.length) await loadUsers();
-  const username = document.getElementById("usernameInput").value.trim().toLowerCase();
-  const password = document.getElementById("passwordInput").value;
-  const msg = document.getElementById("loginMessage");
-
-  const user = users.find(u =>
-    String(u.username).toLowerCase() === username &&
-    String(u.password) === password &&
-    u.active !== false
-  );
-
-  if(user){
-    sessionStorage.setItem("niko_logged_user", JSON.stringify({username:user.username, name:user.name || user.username}));
-    showSearch(user);
-  }else{
-    msg.innerHTML = '<span class="error">Wrong username or password.</span>';
-  }
-}
-
-function showSearch(user){
-  document.getElementById("loginSection").classList.add("hidden");
-  document.getElementById("searchSection").classList.remove("hidden");
-  document.getElementById("welcome").textContent = "Welcome, " + (user.name || user.username);
-  loadExcel();
-}
-
-function logout(){
-  sessionStorage.removeItem("niko_logged_user");
-  location.reload();
-}
-
 async function loadExcel(){
-  if(priceRows.length) return;
   try{
     const res = await fetch("Live_Market_Price.xlsx?cache=" + Date.now());
     if(!res.ok) throw new Error("Excel file not found.");
@@ -123,65 +58,41 @@ async function loadExcel(){
     const wb = XLSX.read(ab, {type:"array", cellDates:false});
     const ws = wb.Sheets[wb.SheetNames[0]];
     const rows = XLSX.utils.sheet_to_json(ws, {header:1, raw:false, defval:""});
-
     priceRows = [];
     for(let r = 21; r < rows.length; r++){
       const row = rows[r] || [];
-      const code = String(row[0] ?? "").trim();   // Column A
-      const price = String(row[2] ?? "").trim();  // Column C
+      const code = String(row[0] ?? "").trim();
+      const price = String(row[2] ?? "").trim();
       if(code && price && code.toLowerCase() !== "code"){
         priceRows.push({code, price});
       }
     }
-
-    document.getElementById("status").textContent =
-      `Ready: ${priceRows.length.toLocaleString()} prices loaded.`;
+    document.getElementById("status").textContent = `Ready: ${priceRows.length.toLocaleString()} prices loaded from Live_Market_Price.xlsx.`;
   }catch(e){
-    document.getElementById("status").textContent =
-      "Could not load Live_Market_Price.xlsx. Make sure file name is exact.";
+    document.getElementById("status").textContent = "Could not load Live_Market_Price.xlsx. Make sure file name is exact.";
     document.getElementById("result").innerHTML = `<span class="small">${e.message}</span>`;
   }
 }
-
 function searchCode(){
   const raw = document.getElementById("searchInput").value.trim();
   const q = norm(raw);
   const result = document.getElementById("result");
-
   if(!q){ result.innerHTML = "Enter converter code."; return; }
   if(!priceRows.length){ result.innerHTML = "Price list not loaded yet."; return; }
-
   const exact = priceRows.find(x => norm(x.code) === q);
   if(exact){
-    result.innerHTML =
-      `<div class="code">Code: ${exact.code}</div>
-       <div class="price">${cleanPrice(exact.price)}</div>
-       <p class="status">Current customer price</p>`;
+    result.innerHTML = `<div class="code">Code: ${exact.code}</div><div class="price">${cleanPrice(exact.price)}</div><p class="status">Current customer price</p>`;
     return;
   }
-
   const sim = priceRows.filter(x => norm(x.code).includes(q)).slice(0,8);
   if(sim.length){
-    result.innerHTML =
-      `<div class="code">No exact match. Similar:</div><p>` +
-      sim.map(x => `${x.code}: <b>${cleanPrice(x.price)}</b>`).join("<br>") +
-      `</p>`;
+    result.innerHTML = `<div class="code">No exact match. Similar:</div><p>` + sim.map(x => `${x.code}: <b>${cleanPrice(x.price)}</b>`).join("<br>") + `</p>`;
     return;
   }
-
   result.innerHTML = `No match for <b>${raw}</b><br><span class="small">Call Niko Auto Core USA for manual check.</span>`;
 }
-
-document.getElementById("passwordInput").addEventListener("keydown", e => { if(e.key === "Enter") login(); });
-document.getElementById("usernameInput").addEventListener("keydown", e => { if(e.key === "Enter") login(); });
 document.getElementById("searchInput").addEventListener("keydown", e => { if(e.key === "Enter") searchCode(); });
-
-loadUsers().then(() => {
-  const saved = sessionStorage.getItem("niko_logged_user");
-  if(saved){
-    try{ showSearch(JSON.parse(saved)); }catch(e){}
-  }
-});
+loadExcel();
 </script>
 </body>
 </html>
