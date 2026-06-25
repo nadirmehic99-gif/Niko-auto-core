@@ -1,21 +1,14 @@
-Niko Auto Core USA - Direct Excel Website V2
+Niko Auto Core USA - Direct Excel Website V3 FIXED
 
-Upload these files to GitHub:
+Upload/replace these files in GitHub:
 - index.html
 - admin.html
 - Live_Market_Price.xlsx
 
-How it works:
-- Customer website reads Live_Market_Price.xlsx directly.
-- It finds the Code column and Current_Price_Auto column.
-- Customers see only code and final price on the page.
+FIX:
+This version reads:
+- Column A = Code
+- Column C = Current_Price_Auto
 
-Daily update:
-1. Edit Live_Market_Price.xlsx.
-2. Change Pt, Pd, Rh, recovery %, merge.
-3. Save the file with exact same name.
-4. Replace Live_Market_Price.xlsx in GitHub.
-5. Customers refresh and see new prices.
-
-Important:
-GitHub public files can be downloaded by technical users. The website hides market numbers on the page, but GitHub is public hosting.
+Daily:
+Edit Excel -> save as Live_Market_Price.xlsx -> replace Excel in GitHub.
