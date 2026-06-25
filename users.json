@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Niko Admin",
+    "username": "niko",
+    "password": "mafija1",
+    "active": true
+  },
+  {
+    "name": "Customer 1",
+    "username": "customer1",
+    "password": "price123",
+    "active": true
+  },
+  {
+    "name": "Customer 2",
+    "username": "customer2",
+    "password": "price456",
+    "active": true
+  }
+]

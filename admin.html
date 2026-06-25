@@ -3,36 +3,144 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>Niko Admin | Excel Upload</title>
+<title>Niko Admin | User Manager</title>
 <style>
-:root{--card:#141c27;--border:#2a3444;--gold:#e0aa18;--text:#f4f6fb;--muted:#9aa3b2}
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#050811,#101725);color:var(--text)}
-.wrap{max-width:760px;margin:auto;padding:42px 18px 80px}
-.card{background:rgba(20,28,39,.96);border:1px solid var(--border);border-radius:24px;padding:28px;margin:22px 0}
+:root{--card:#141c27;--panel:#080d16;--border:#2a3444;--gold:#e0aa18;--green:#35b84d;--text:#f4f6fb;--muted:#9aa3b2;--red:#ff6b6b}
+*{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#050811,#101725);color:var(--text)}
+.wrap{max-width:900px;margin:auto;padding:42px 18px 80px}.card{background:rgba(20,28,39,.96);border:1px solid var(--border);border-radius:24px;padding:28px;margin:22px 0}
 h1{font-size:clamp(34px,7vw,58px);margin:35px 0 18px;letter-spacing:1px;font-weight:900}.gold{color:var(--gold)}
-p,li{color:var(--muted);font-size:20px;line-height:1.45}
-a.btn{display:block;text-align:center;text-decoration:none;background:var(--gold);border:0;color:#111;font-weight:900;padding:18px 22px;border-radius:18px;font-size:22px;margin-top:18px}
-.info{background:#080d16;border:1px solid var(--border);border-radius:20px;padding:22px;margin-top:22px}
+p,li{color:var(--muted);font-size:19px;line-height:1.45}
+input,select,button{font-size:18px;border-radius:14px}
+input,select{width:100%;padding:14px;background:var(--panel);color:var(--text);border:1px solid var(--border);outline:none;margin:6px 0}
+button{background:var(--gold);border:0;color:#111;font-weight:900;padding:14px 18px;cursor:pointer;margin:8px 0}
+button.secondary{background:transparent;border:1px solid var(--gold);color:var(--gold)}
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr 130px;gap:10px;align-items:end}
+table{width:100%;border-collapse:collapse;margin-top:18px}
+th,td{border-bottom:1px solid var(--border);padding:10px;text-align:left}
+th{color:var(--gold)}.hidden{display:none}.status{color:var(--muted)}
+@media(max-width:760px){.grid{grid-template-columns:1fr} table{font-size:14px}}
 </style>
 </head>
 <body>
 <main class="wrap">
-<section class="card">
+<section id="loginCard" class="card">
 <h1><span class="gold">NIKO</span> ADMIN</h1>
-<p>This version reads your Excel file directly.</p>
-<div class="info">
-<h2>Daily steps</h2>
-<ol>
-<li>Open <b>Live_Market_Price.xlsx</b>.</li>
-<li>Change Pt, Pd, Rh, recovery, merge.</li>
-<li>Save exact same name: <b>Live_Market_Price.xlsx</b>.</li>
-<li>Replace the old Excel file in GitHub.</li>
-<li>Customers refresh the website and see new prices.</li>
-</ol>
+<p>Login to manage customer usernames and passwords.</p>
+<input id="adminPass" type="password" placeholder="Admin password" />
+<button onclick="adminLogin()">Login</button>
+<p class="status">Default admin password: <b>mafija1</b></p>
+</section>
+
+<section id="adminCard" class="card hidden">
+<h1><span class="gold">USER</span> MANAGER</h1>
+<p>Add customers, disable customers, then download <b>users.json</b> and replace it in GitHub.</p>
+
+<div class="grid">
+  <div><label>Name</label><input id="name" placeholder="John Auto"></div>
+  <div><label>Username</label><input id="username" placeholder="john"></div>
+  <div><label>Password</label><input id="password" placeholder="abc123"></div>
+  <div><label>Active</label><select id="active"><option value="true">Yes</option><option value="false">No</option></select></div>
 </div>
-<a class="btn" href="index.html">Open Customer Search</a>
+<button onclick="addUser()">Add Customer</button>
+<button class="secondary" onclick="downloadUsers()">Download users.json</button>
+<button class="secondary" onclick="loadCurrentUsers()">Load current users.json</button>
+
+<p id="status" class="status">After download, upload/replace users.json in GitHub.</p>
+
+<table>
+<thead><tr><th>Name</th><th>Username</th><th>Password</th><th>Active</th><th>Remove</th></tr></thead>
+<tbody id="userBody"></tbody>
+</table>
+
+<h2>Daily Excel Update</h2>
+<ol>
+<li>Open Live_Market_Price.xlsx.</li>
+<li>Change Pt, Pd, Rh, recovery, merge.</li>
+<li>Save exact same name.</li>
+<li>Replace old Live_Market_Price.xlsx in GitHub.</li>
+</ol>
 </section>
 </main>
+
+<script>
+const ADMIN_PASSWORD = "mafija1";
+let users = [
+  {"name":"Niko Admin","username":"niko","password":"mafija1","active":true},
+  {"name":"Customer 1","username":"customer1","password":"price123","active":true}
+];
+
+function adminLogin(){
+  if(document.getElementById("adminPass").value === ADMIN_PASSWORD){
+    document.getElementById("loginCard").classList.add("hidden");
+    document.getElementById("adminCard").classList.remove("hidden");
+    renderUsers();
+  }else{
+    alert("Wrong admin password");
+  }
+}
+
+async function loadCurrentUsers(){
+  try{
+    const res = await fetch("users.json?cache=" + Date.now());
+    if(!res.ok) throw new Error("users.json not found");
+    users = await res.json();
+    renderUsers();
+    document.getElementById("status").textContent = "Loaded current users.json.";
+  }catch(e){
+    document.getElementById("status").textContent = "Could not load users.json. Using starter list.";
+  }
+}
+
+function addUser(){
+  const name = document.getElementById("name").value.trim();
+  const username = document.getElementById("username").value.trim().toLowerCase();
+  const password = document.getElementById("password").value.trim();
+  const active = document.getElementById("active").value === "true";
+  if(!username || !password){ alert("Username and password required"); return; }
+  const existing = users.findIndex(u => String(u.username).toLowerCase() === username);
+  const user = {name:name || username, username, password, active};
+  if(existing >= 0) users[existing] = user; else users.push(user);
+  document.getElementById("name").value = "";
+  document.getElementById("username").value = "";
+  document.getElementById("password").value = "";
+  renderUsers();
+}
+
+function removeUser(i){
+  users.splice(i,1);
+  renderUsers();
+}
+
+function toggleActive(i){
+  users[i].active = !users[i].active;
+  renderUsers();
+}
+
+function renderUsers(){
+  const body = document.getElementById("userBody");
+  body.innerHTML = "";
+  users.forEach((u,i) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${u.name || ""}</td>
+      <td>${u.username}</td>
+      <td>${u.password}</td>
+      <td><button class="secondary" onclick="toggleActive(${i})">${u.active !== false ? "Yes" : "No"}</button></td>
+      <td><button onclick="removeUser(${i})">Remove</button></td>
+    `;
+    body.appendChild(tr);
+  });
+}
+
+function downloadUsers(){
+  const blob = new Blob([JSON.stringify(users, null, 2)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "users.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+  document.getElementById("status").textContent = "Downloaded users.json. Replace users.json in GitHub.";
+}
+</script>
 </body>
 </html>
