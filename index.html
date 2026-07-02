@@ -33,6 +33,12 @@ footer{text-align:center;margin-top:30px}.small{font-size:18px;color:var(--muted
 .cart-item{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--border);padding:9px 0;font-size:18px}
 .cart-total{font-size:26px;color:var(--green);font-weight:900;text-align:right;margin-top:12px}
 .small-btn{font-size:16px;padding:10px 12px;border-radius:12px;margin-top:10px}
+.result-row{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid var(--border);padding:10px 0}.result-row button{font-size:14px;padding:9px 10px;border-radius:10px;white-space:nowrap}.result-row span{line-height:1.3}.best{color:var(--green);font-weight:900}
+.photo-box{margin-top:18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px}
+.photo-box img{width:100%;max-height:260px;object-fit:contain;background:#050811;border:1px solid var(--border);border-radius:16px;padding:6px}
+.thumb{width:54px;height:54px;object-fit:cover;border-radius:10px;border:1px solid var(--border);background:#050811;margin-right:8px;vertical-align:middle}
+.no-photo{color:var(--muted);font-size:16px;margin-top:12px}
+
 @media(max-width:620px){.search-row{flex-direction:column}button{width:100%}.price{font-size:58px}.wrap{padding-top:20px}}
 </style>
 </head>
@@ -85,6 +91,39 @@ footer{text-align:center;margin-top:30px}.small{font-size:18px;color:var(--muted
 <script>
 let priceRows = [];
 let users = [];
+let serialImages = {};
+
+function imageKey(code){ return norm(code); }
+
+async function loadImages(){
+  try{
+    const res = await fetch("images.json?cache=" + Date.now());
+    if(!res.ok) throw new Error("images.json not found");
+    const data = await res.json();
+    serialImages = data && typeof data === "object" ? data : {};
+  }catch(e){
+    serialImages = {};
+  }
+}
+
+function getImagesForCode(code){
+  const key = imageKey(code);
+  const val = serialImages[key] || serialImages[String(code).toUpperCase()] || serialImages[String(code)];
+  if(!val) return [];
+  return Array.isArray(val) ? val : [val];
+}
+
+function renderImages(code){
+  const imgs = getImagesForCode(code);
+  if(!imgs.length) return '<div class="no-photo">No image available</div>';
+  return '<div class="photo-box">' + imgs.map(src => `<img src="${safeText(src)}" alt="${safeText(code)} photo">`).join("") + '</div>';
+}
+
+function thumbForCode(code){
+  const imgs = getImagesForCode(code);
+  if(!imgs.length) return "";
+  return `<img class="thumb" src="${safeText(imgs[0])}" alt="">`;
+}
 
 function norm(v){return String(v||"").toUpperCase().replace(/[\s\-_./]/g,"");}
 function cleanPrice(v){
@@ -172,6 +211,7 @@ function showSearch(user){
   document.getElementById("searchSection").classList.remove("hidden");
   document.getElementById("welcome").textContent =
     "Welcome, " + (user.name || user.username) + (user.company ? " - " + user.company : "");
+  loadImages();
   loadExcel();
 }
 
@@ -218,24 +258,35 @@ function searchCode(){
 
   const exact = priceRows.find(x => norm(x.code) === q);
   if(exact){
+    const codeHtml = safeText(exact.code);
+    const priceHtml = safeText(exact.price);
     result.innerHTML =
-      `<div class="code">Code: ${exact.code}</div>
+      `<div class="code">Code: ${codeHtml}</div>
        <div class="price">${cleanPrice(exact.price)}</div>
        <p class="status">Current customer price</p>
-       <button class="small-btn" onclick="addToCart('${'${'}safeText(exact.code)}', '${'${'}safeText(exact.price)}')">Add to Order</button>`;
+       <button class="small-btn" onclick="addToCart('${codeHtml}', '${priceHtml}')">➕ Add to Order</button>
+       ${renderImages(exact.code)}`;
     return;
   }
 
-  const sim = priceRows.filter(x => norm(x.code).includes(q)).slice(0,8);
+  const sim = priceRows
+    .filter(x => norm(x.code).includes(q))
+    .sort((a,b) => priceNumber(b.price) - priceNumber(a.price))
+    .slice(0,12);
+
   if(sim.length){
     result.innerHTML =
-      `<div class="code">No exact match. Similar:</div><p>` +
-      sim.map(x => `${x.code}: <b>${cleanPrice(x.price)}</b>`).join("<br>") +
-      `</p>`;
+      `<div class="code">No exact match. Similar shown largest price first:</div>` +
+      sim.map((x,i) => {
+        const codeHtml = safeText(x.code);
+        const priceHtml = safeText(x.price);
+        const best = i === 0 ? ' <span class="best">Largest</span>' : '';
+        return `<div class="result-row"><span>${thumbForCode(x.code)}${codeHtml}: <b>${cleanPrice(x.price)}</b>${best}</span><button onclick="addToCart('${codeHtml}', '${priceHtml}')">➕ Add</button></div>`;
+      }).join("");
     return;
   }
 
-  result.innerHTML = `No match for <b>${raw}</b><br><span class="small">Call Niko Auto Core USA for manual check.</span>`;
+  result.innerHTML = `No match for <b>${safeText(raw)}</b><br><span class="small">Call Niko Auto Core USA for manual check.</span>`;
 }
 
 document.getElementById("passwordInput").addEventListener("keydown", e => { if(e.key === "Enter") login(); });
@@ -243,6 +294,7 @@ document.getElementById("usernameInput").addEventListener("keydown", e => { if(e
 document.getElementById("searchInput").addEventListener("keydown", e => { if(e.key === "Enter") searchCode(); });
 
 renderCart();
+loadImages();
 loadUsers().then(() => {
   const saved = sessionStorage.getItem("niko_logged_user");
   if(saved){
