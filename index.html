@@ -39,6 +39,14 @@ footer{text-align:center;margin-top:30px}.phone-link{color:var(--gold);font-weig
 .remove-btn{font-size:14px;padding:8px 10px;border-radius:10px;background:transparent;border:1px solid var(--red);color:var(--red)}
 .total-line{text-align:right;font-size:28px;font-weight:900;color:var(--green);margin-top:14px}
 .similar-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #1d2736}.similar-row:last-child{border-bottom:0}.similar-add{font-size:14px;padding:8px 12px;border-radius:10px;width:auto}.print-area-title{display:none}
+.login-card{position:relative;overflow:hidden;background:linear-gradient(180deg,rgba(20,28,39,.98),rgba(10,15,25,.98));box-shadow:0 20px 55px rgba(0,0,0,.35)}
+.login-card:before{content:"";position:absolute;inset:0;border-top:5px solid var(--gold);pointer-events:none}
+.login-logo{text-align:center;font-size:clamp(31px,6vw,48px);font-weight:900;letter-spacing:1px;line-height:1.05;margin:8px 0 10px;color:#fff}
+.login-sub{text-align:center;color:var(--muted);font-size:18px;margin:0 0 22px}
+.login-help{background:#0b111d;border:1px solid #263244;border-radius:18px;padding:16px;margin-top:18px;text-align:center;color:var(--muted);line-height:1.35;font-size:18px}
+.login-help a{color:var(--gold);font-weight:900;text-decoration:none;font-size:22px;display:inline-block;margin-top:5px}
+.login-note{text-align:center;color:var(--muted);font-size:15px;margin-top:13px}
+.login-btn{width:100%;margin-top:10px}
 @media print{body{background:#fff;color:#000}.wrap{max-width:100%;padding:10px}.login-card,.search-row,#result,.info,.logout,footer,#status,.actions:not(.print-actions){display:none!important}.card,.order-card{border:0;background:#fff;color:#000;padding:0}.print-area-title{display:block;color:#000;text-align:center}.order-table th,.order-table td{border-bottom:1px solid #ccc}.total-line{color:#000}}
 @media(max-width:620px){.search-row{flex-direction:column}.manual-add{grid-template-columns:1fr}button{width:100%}.price{font-size:58px}.wrap{padding-top:20px}}
 </style>
@@ -49,12 +57,14 @@ footer{text-align:center;margin-top:30px}.phone-link{color:var(--gold);font-weig
   <div class="subtitle">Customer Price Search</div>
 
   <section id="loginSection" class="card login-card">
-    <h2 class="login-title">Customer Login</h2>
-    <p class="status">Enter your username and password.</p>
+    <div class="login-logo"><span class="gold">NIKO</span> AUTO CORE USA</div>
+    <div class="login-sub">Customer Login • Price Search • Orders</div>
     <input id="usernameInput" placeholder="Username" autocomplete="username" />
     <input id="passwordInput" type="password" placeholder="Password" autocomplete="current-password" />
-    <button onclick="login()">Login</button>
+    <button class="login-btn" onclick="login()">Login</button>
     <p id="loginMessage" class="status"></p>
+    <div class="login-help">Need help to login? Call or text Niko Auto Core USA<br><a href="tel:+14694222777">Phone: (469) 422-2777</a></div>
+    <div class="login-note">Prices are not hedged. Confirm before sale.</div>
   </section>
 
   <section id="searchSection" class="card hidden">
@@ -140,10 +150,11 @@ async function login(){
     return;
   }
 
-  sessionStorage.setItem("niko_logged_user", JSON.stringify({
+  localStorage.setItem("niko_saved_login", JSON.stringify({
     username:user.username,
     name:user.name || user.username,
-    company:user.company || ""
+    company:user.company || "",
+    password: password
   }));
   showSearch(user);
 }
@@ -159,7 +170,7 @@ function showSearch(user){
 }
 
 function logout(){
-  sessionStorage.removeItem("niko_logged_user");
+  localStorage.removeItem("niko_saved_login");
   location.reload();
 }
 
@@ -240,7 +251,7 @@ function priceNumber(v){
 function money(n){return "$" + Math.round(Number(n)||0).toLocaleString();}
 function orderKey(){
   let u = "guest";
-  try{ u = JSON.parse(sessionStorage.getItem("niko_logged_user")||"{}").username || "guest"; }catch(e){}
+  try{ u = JSON.parse(localStorage.getItem("niko_saved_login")||"{}").username || "guest"; }catch(e){}
   return "niko_order_" + u;
 }
 function loadOrder(){
@@ -337,12 +348,29 @@ document.getElementById("searchInput").addEventListener("keydown", e => { if(e.k
 document.getElementById("manualCodeInput").addEventListener("keydown", e => { if(e.key === "Enter") addManualToOrder(); });
 document.getElementById("manualPriceInput").addEventListener("keydown", e => { if(e.key === "Enter") addManualToOrder(); });
 
-loadUsers().then(() => {
-  const saved = sessionStorage.getItem("niko_logged_user");
-  if(saved){
-    try{ showSearch(JSON.parse(saved)); }catch(e){}
+// SECURITY: saved login is verified against the latest users.json every time page opens.
+// If admin changes password, locks account, or removes user, browser is forced back to login.
+async function verifySavedLogin(){
+  try{
+    await loadUsers();
+    const saved = JSON.parse(localStorage.getItem("niko_saved_login") || "null");
+    if(!saved || !saved.username || !saved.password) return;
+    const user = users.find(u =>
+      String(u.username).toLowerCase() === String(saved.username).toLowerCase() &&
+      String(u.password) === String(saved.password) &&
+      u.active !== false
+    );
+    if(user){
+      showSearch(user);
+    }else{
+      localStorage.removeItem("niko_saved_login");
+      document.getElementById("loginMessage").innerHTML = '<span class="error">Login expired. Please enter new password.</span>';
+    }
+  }catch(e){
+    localStorage.removeItem("niko_saved_login");
   }
-}).catch(()=>{});
+}
+verifySavedLogin();
 </script>
 </body>
 </html>
