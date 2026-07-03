@@ -19,10 +19,21 @@ button{background:var(--gold);border:0;color:#111;font-weight:900;padding:18px 3
 .status,footer{color:var(--muted);line-height:1.45}.result{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:28px;margin-top:24px;min-height:145px;font-size:22px}
 .code{color:var(--muted);font-size:24px}.price{font-size:78px;color:var(--green);font-weight:900;margin-top:12px}
 .info{background:#101827;border:1px solid #27344a;border-radius:18px;padding:18px;margin-top:24px;color:var(--muted);font-size:20px}
-footer{text-align:center;margin-top:30px}.phone-link{color:var(--gold);font-weight:900;text-decoration:none;display:block;margin-top:6px;font-size:20px}.small{font-size:18px;color:var(--muted)}.error{color:var(--red);font-weight:800}
+footer{text-align:center;margin-top:30px}.small{font-size:18px;color:var(--muted)}.error{color:var(--red);font-weight:800}
 .hidden{display:none}.login-title{text-align:center;font-size:30px;color:var(--gold);margin:0 0 15px}.login-card{max-width:560px;margin:45px auto}
 .logout{background:transparent;border:1px solid var(--gold);color:var(--gold);font-size:16px;padding:10px 14px;border-radius:12px;margin-top:18px}
 .welcome{color:var(--gold);font-weight:900}
+.contact-buttons{display:flex;gap:12px;margin:18px 0;flex-wrap:wrap}
+.contact-buttons a{flex:1;text-align:center;text-decoration:none;background:var(--gold);color:#111;font-weight:900;padding:16px;border-radius:16px;font-size:20px}
+.contact-buttons a.sms{background:transparent;color:var(--gold);border:1px solid var(--gold)}
+.hours{background:#0c1420;border:1px solid var(--border);border-radius:16px;padding:14px;margin-top:16px;color:var(--muted);font-size:18px;text-align:center}
+.forgot{margin-top:14px;text-align:center}.forgot a{color:var(--gold);font-weight:900;text-decoration:none}
+.cart{margin-top:22px;background:#0c1420;border:1px solid var(--border);border-radius:18px;padding:18px}
+.cart h3{margin:0 0 10px;color:var(--gold)}
+.cart-item{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--border);padding:9px 0;font-size:18px}
+.cart-total{font-size:26px;color:var(--green);font-weight:900;text-align:right;margin-top:12px}
+.small-btn{font-size:16px;padding:10px 12px;border-radius:12px;margin-top:10px}
+.result-row{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid var(--border);padding:10px 0}.result-row button{font-size:14px;padding:9px 10px;border-radius:10px;white-space:nowrap}.result-row span{line-height:1.3}.best{color:var(--green);font-weight:900}
 @media(max-width:620px){.search-row{flex-direction:column}button{width:100%}.price{font-size:58px}.wrap{padding-top:20px}}
 </style>
 </head>
@@ -37,7 +48,13 @@ footer{text-align:center;margin-top:30px}.phone-link{color:var(--gold);font-weig
     <input id="usernameInput" placeholder="Username" autocomplete="username" />
     <input id="passwordInput" type="password" placeholder="Password" autocomplete="current-password" />
     <button onclick="login()">Login</button>
+    <div class="forgot"><a href="tel:+14694222777">Forgot password? Call Niko</a></div>
     <p id="loginMessage" class="status"></p>
+    <div class="contact-buttons">
+      <a href="tel:+14694222777">📞 Call Now</a>
+      <a class="sms" href="sms:+14694222777">💬 Text Niko</a>
+    </div>
+    <div class="hours"><b>Business Hours</b><br>Monday - Saturday: 8:00 AM - 6:00 PM<br>Sunday: Call / Text First</div>
   </section>
 
   <section id="searchSection" class="card hidden">
@@ -49,10 +66,21 @@ footer{text-align:center;margin-top:30px}.phone-link{color:var(--gold);font-weig
     <p id="status" class="status">Loading Live_Market_Price.xlsx...</p>
     <div id="result" class="result">Type converter code to search.</div>
     <div class="info">Customers see code and final price only. Market numbers and formulas are not shown on this page.</div>
+    <div class="contact-buttons">
+      <a href="tel:+14694222777">📞 Call Now</a>
+      <a class="sms" href="sms:+14694222777">💬 Text Niko</a>
+    </div>
+    <div class="cart">
+      <h3>Customer Order / Cart</h3>
+      <div id="cartItems" class="small">No items added yet.</div>
+      <div id="cartTotal" class="cart-total">Total: $0</div>
+      <button class="small-btn" onclick="sendOrderText()">Send Order by Text</button>
+      <button class="small-btn logout" onclick="clearCart()">Clear Order</button>
+    </div>
     <button class="logout" onclick="logout()">Logout</button>
   </section>
 
-  <footer>Prices are not hedged. Call Niko Auto Core USA to confirm before sale.<br><a class="phone-link" href="tel:+14694222777">Phone: (469) 422-2777</a></footer>
+  <footer>Prices are not hedged. Call Niko Auto Core USA to confirm before sale.<br>📞 <a style="color:#e0aa18" href="tel:+14694222777">(469) 422-2777</a></footer>
 </main>
 
 <script>
@@ -66,6 +94,37 @@ function cleanPrice(v){
   let n = Number(s.replace(/[$, ]/g,""));
   if(Number.isFinite(n)) return "$" + Math.round(n).toLocaleString();
   return s;
+}
+function priceNumber(v){
+  const n = Number(String(v ?? "").replace(/[$, ]/g,""));
+  return Number.isFinite(n) ? Math.round(n) : 0;
+}
+function safeText(v){
+  return String(v ?? "").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+let cart = JSON.parse(localStorage.getItem("niko_order_cart") || "[]");
+function saveCart(){ localStorage.setItem("niko_order_cart", JSON.stringify(cart)); renderCart(); }
+function addToCart(code, price){
+  cart.push({code:String(code), price:priceNumber(price)});
+  saveCart();
+}
+function removeCartItem(i){ cart.splice(i,1); saveCart(); }
+function clearCart(){ cart = []; saveCart(); }
+function renderCart(){
+  const items = document.getElementById("cartItems");
+  const totalBox = document.getElementById("cartTotal");
+  if(!items || !totalBox) return;
+  if(!cart.length){ items.innerHTML = "No items added yet."; totalBox.textContent = "Total: $0"; return; }
+  let total = cart.reduce((sum,x)=>sum + (Number(x.price)||0),0);
+  items.innerHTML = cart.map((x,i)=>`<div class="cart-item"><span>${safeText(x.code)} - <b>$${Number(x.price||0).toLocaleString()}</b></span><button class="small-btn" onclick="removeCartItem(${i})">Remove</button></div>`).join("");
+  totalBox.textContent = "Total: $" + total.toLocaleString();
+}
+function sendOrderText(){
+  if(!cart.length){ alert("Order/cart is empty"); return; }
+  const total = cart.reduce((sum,x)=>sum + (Number(x.price)||0),0);
+  const lines = cart.map((x,i)=>`${i+1}. ${x.code} - $${Number(x.price||0).toLocaleString()}`).join("%0A");
+  const msg = `Niko Auto Core USA order:%0A${lines}%0ATotal: $${total.toLocaleString()}`;
+  location.href = `sms:+14694222777?body=${msg}`;
 }
 
 async function loadUsers(){
@@ -160,29 +219,41 @@ function searchCode(){
 
   const exact = priceRows.find(x => norm(x.code) === q);
   if(exact){
+    const codeHtml = safeText(exact.code);
+    const priceHtml = safeText(exact.price);
     result.innerHTML =
-      `<div class="code">Code: ${exact.code}</div>
+      `<div class="code">Code: ${codeHtml}</div>
        <div class="price">${cleanPrice(exact.price)}</div>
-       <p class="status">Current customer price</p>`;
+       <p class="status">Current customer price</p>
+       <button class="small-btn" onclick="addToCart('${codeHtml}', '${priceHtml}')">➕ Add to Order</button>`;
     return;
   }
 
-  const sim = priceRows.filter(x => norm(x.code).includes(q)).slice(0,8);
+  const sim = priceRows
+    .filter(x => norm(x.code).includes(q))
+    .sort((a,b) => priceNumber(b.price) - priceNumber(a.price))
+    .slice(0,12);
+
   if(sim.length){
     result.innerHTML =
-      `<div class="code">No exact match. Similar:</div><p>` +
-      sim.map(x => `${x.code}: <b>${cleanPrice(x.price)}</b>`).join("<br>") +
-      `</p>`;
+      `<div class="code">No exact match. Similar shown largest price first:</div>` +
+      sim.map((x,i) => {
+        const codeHtml = safeText(x.code);
+        const priceHtml = safeText(x.price);
+        const best = i === 0 ? ' <span class="best">Largest</span>' : '';
+        return `<div class="result-row"><span>${codeHtml}: <b>${cleanPrice(x.price)}</b>${best}</span><button onclick="addToCart('${codeHtml}', '${priceHtml}')">➕ Add</button></div>`;
+      }).join("");
     return;
   }
 
-  result.innerHTML = `No match for <b>${raw}</b><br><span class="small">Call Niko Auto Core USA for manual check.</span>`;
+  result.innerHTML = `No match for <b>${safeText(raw)}</b><br><span class="small">Call Niko Auto Core USA for manual check.</span>`;
 }
 
 document.getElementById("passwordInput").addEventListener("keydown", e => { if(e.key === "Enter") login(); });
 document.getElementById("usernameInput").addEventListener("keydown", e => { if(e.key === "Enter") login(); });
 document.getElementById("searchInput").addEventListener("keydown", e => { if(e.key === "Enter") searchCode(); });
 
+renderCart();
 loadUsers().then(() => {
   const saved = sessionStorage.getItem("niko_logged_user");
   if(saved){
