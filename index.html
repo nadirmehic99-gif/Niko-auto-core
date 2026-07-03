@@ -24,6 +24,9 @@ footer{text-align:center;margin-top:30px}.phone-link{color:var(--gold);font-weig
 .logout{background:transparent;border:1px solid var(--gold);color:var(--gold);font-size:16px;padding:10px 14px;border-radius:12px;margin-top:18px}
 .welcome{color:var(--gold);font-weight:900}
 .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+.manual-add{display:grid;grid-template-columns:1.5fr 1fr auto;gap:10px;margin-top:16px;align-items:center}
+.manual-add input{font-size:18px;padding:14px;margin:0;border-radius:14px}
+.manual-add button{font-size:18px;padding:14px 18px;border-radius:14px}
 .actions button{font-size:18px;padding:14px 18px;border-radius:14px;width:auto}
 .btn-secondary{background:transparent;border:1px solid var(--gold);color:var(--gold)}
 .btn-danger{background:var(--red);color:#111}
@@ -37,7 +40,7 @@ footer{text-align:center;margin-top:30px}.phone-link{color:var(--gold);font-weig
 .total-line{text-align:right;font-size:28px;font-weight:900;color:var(--green);margin-top:14px}
 .print-area-title{display:none}
 @media print{body{background:#fff;color:#000}.wrap{max-width:100%;padding:10px}.login-card,.search-row,#result,.info,.logout,footer,#status,.actions:not(.print-actions){display:none!important}.card,.order-card{border:0;background:#fff;color:#000;padding:0}.print-area-title{display:block;color:#000;text-align:center}.order-table th,.order-table td{border-bottom:1px solid #ccc}.total-line{color:#000}}
-@media(max-width:620px){.search-row{flex-direction:column}button{width:100%}.price{font-size:58px}.wrap{padding-top:20px}}
+@media(max-width:620px){.search-row{flex-direction:column}.manual-add{grid-template-columns:1fr}button{width:100%}.price{font-size:58px}.wrap{padding-top:20px}}
 </style>
 </head>
 <body>
@@ -62,6 +65,11 @@ footer{text-align:center;margin-top:30px}.phone-link{color:var(--gold);font-weig
     </div>
     <p id="status" class="status">Loading Live_Market_Price.xlsx...</p>
     <div id="result" class="result">Type converter code to search.</div>
+    <div class="manual-add">
+      <input id="manualCodeInput" placeholder="EXTRA CODE TO ORDER" autocomplete="off" />
+      <input id="manualPriceInput" placeholder="PRICE" inputmode="numeric" autocomplete="off" />
+      <button onclick="addManualToOrder()">Add Extra</button>
+    </div>
     <div class="actions">
       <button id="addOrderBtn" class="hidden" onclick="addCurrentToOrder()">Add to Order</button>
       <button class="btn-secondary" onclick="printOrder()">Print Order</button>
@@ -229,13 +237,27 @@ function loadOrder(){
   catch(e){ orderItems = []; }
 }
 function saveOrder(){ localStorage.setItem(orderKey(), JSON.stringify(orderItems)); }
-function addCurrentToOrder(){
-  if(!currentResult) return;
-  const found = orderItems.find(x => norm(x.code) === norm(currentResult.code));
-  if(found){ found.qty = Number(found.qty || 1) + 1; }
-  else{ orderItems.push({code: currentResult.code, price: currentResult.price, qty: 1}); }
+function addItemToOrder(code, price){
+  code = String(code || "").trim().toUpperCase();
+  price = cleanPrice(price);
+  if(!code || priceNumber(price) <= 0){ alert("Enter code and price first."); return; }
+  const found = orderItems.find(x => norm(x.code) === norm(code));
+  if(found){ found.qty = Number(found.qty || 1) + 1; found.price = price; }
+  else{ orderItems.push({code, price, qty: 1}); }
   saveOrder();
   renderOrder();
+}
+function addCurrentToOrder(){
+  if(!currentResult) return;
+  addItemToOrder(currentResult.code, currentResult.price);
+}
+function addManualToOrder(){
+  const codeEl = document.getElementById("manualCodeInput");
+  const priceEl = document.getElementById("manualPriceInput");
+  addItemToOrder(codeEl.value, priceEl.value);
+  codeEl.value = "";
+  priceEl.value = "";
+  codeEl.focus();
 }
 function updateQty(i, value){
   const q = Math.max(1, Math.round(Number(value)||1));
@@ -301,6 +323,8 @@ async function copyOrderText(){
 document.getElementById("passwordInput").addEventListener("keydown", e => { if(e.key === "Enter") login(); });
 document.getElementById("usernameInput").addEventListener("keydown", e => { if(e.key === "Enter") login(); });
 document.getElementById("searchInput").addEventListener("keydown", e => { if(e.key === "Enter") searchCode(); });
+document.getElementById("manualCodeInput").addEventListener("keydown", e => { if(e.key === "Enter") addManualToOrder(); });
+document.getElementById("manualPriceInput").addEventListener("keydown", e => { if(e.key === "Enter") addManualToOrder(); });
 
 loadUsers().then(() => {
   const saved = sessionStorage.getItem("niko_logged_user");
