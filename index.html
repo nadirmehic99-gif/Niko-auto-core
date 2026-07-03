@@ -109,6 +109,7 @@ let priceRows = [];
 let users = [];
 let currentResult = null;
 let orderItems = [];
+let loggedInUsername = "guest";
 
 function norm(v){return String(v||"").toUpperCase().replace(/[\s\-_./]/g,"");}
 function cleanPrice(v){
@@ -155,16 +156,12 @@ async function login(){
     return;
   }
 
-  localStorage.setItem("niko_saved_login", JSON.stringify({
-    username:user.username,
-    name:user.name || user.username,
-    company:user.company || "",
-    password: password
-  }));
+  // Do not save login in browser. User must login again after closing/reopening.
   showSearch(user);
 }
 
 function showSearch(user){
+  loggedInUsername = user.username || "guest";
   document.body.classList.add("logged-in");
   document.getElementById("loginSection").classList.add("hidden");
   document.getElementById("searchSection").classList.remove("hidden");
@@ -177,7 +174,7 @@ function showSearch(user){
 
 function logout(){
   document.body.classList.remove("logged-in");
-  localStorage.removeItem("niko_saved_login");
+  loggedInUsername = "guest";
   location.reload();
 }
 
@@ -257,9 +254,7 @@ function priceNumber(v){
 }
 function money(n){return "$" + Math.round(Number(n)||0).toLocaleString();}
 function orderKey(){
-  let u = "guest";
-  try{ u = JSON.parse(localStorage.getItem("niko_saved_login")||"{}").username || "guest"; }catch(e){}
-  return "niko_order_" + u;
+  return "niko_order_" + (loggedInUsername || "guest");
 }
 function loadOrder(){
   try{ orderItems = JSON.parse(localStorage.getItem(orderKey()) || "[]"); }
@@ -355,29 +350,7 @@ document.getElementById("searchInput").addEventListener("keydown", e => { if(e.k
 document.getElementById("manualCodeInput").addEventListener("keydown", e => { if(e.key === "Enter") addManualToOrder(); });
 document.getElementById("manualPriceInput").addEventListener("keydown", e => { if(e.key === "Enter") addManualToOrder(); });
 
-// SECURITY: saved login is verified against the latest users.json every time page opens.
-// If admin changes password, locks account, or removes user, browser is forced back to login.
-async function verifySavedLogin(){
-  try{
-    await loadUsers();
-    const saved = JSON.parse(localStorage.getItem("niko_saved_login") || "null");
-    if(!saved || !saved.username || !saved.password) return;
-    const user = users.find(u =>
-      String(u.username).toLowerCase() === String(saved.username).toLowerCase() &&
-      String(u.password) === String(saved.password) &&
-      u.active !== false
-    );
-    if(user){
-      showSearch(user);
-    }else{
-      localStorage.removeItem("niko_saved_login");
-      document.getElementById("loginMessage").innerHTML = '<span class="error">Login expired. Please enter new password.</span>';
-    }
-  }catch(e){
-    localStorage.removeItem("niko_saved_login");
-  }
-}
-verifySavedLogin();
+// Login is not saved in browser in this version. Every new browser open requires login.
 </script>
 </body>
 </html>
