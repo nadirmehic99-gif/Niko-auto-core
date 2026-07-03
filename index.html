@@ -9,6 +9,9 @@
 :root{--card:#141c27;--panel:#080d16;--border:#2a3444;--gold:#e0aa18;--green:#35b84d;--text:#f4f6fb;--muted:#9aa3b2;--red:#ff6b6b}
 *{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#050811,#101725);color:var(--text)}
 .wrap{max-width:760px;margin:auto;padding:42px 18px 80px}
+.site-head{display:none}
+body.logged-in .site-head{display:block}
+body:not(.logged-in) footer{display:none}
 h1{text-align:center;font-size:clamp(35px,7vw,58px);margin:35px 0 8px;letter-spacing:1px;font-weight:900}
 .gold{color:var(--gold)} .subtitle{text-align:center;color:var(--muted);font-size:22px;margin-bottom:34px}
 .card{background:rgba(20,28,39,.96);border:1px solid var(--border);border-radius:24px;padding:28px;margin:22px 0}
@@ -53,8 +56,10 @@ footer{text-align:center;margin-top:30px}.phone-link{color:var(--gold);font-weig
 </head>
 <body>
 <main class="wrap">
-  <h1><span class="gold">NIKO</span> AUTO CORE USA</h1>
-  <div class="subtitle">Customer Price Search</div>
+  <div class="site-head">
+    <h1><span class="gold">NIKO</span> AUTO CORE USA</h1>
+    <div class="subtitle">Customer Price Search</div>
+  </div>
 
   <section id="loginSection" class="card login-card">
     <div class="login-logo"><span class="gold">NIKO</span> AUTO CORE USA</div>
@@ -160,6 +165,7 @@ async function login(){
 }
 
 function showSearch(user){
+  document.body.classList.add("logged-in");
   document.getElementById("loginSection").classList.add("hidden");
   document.getElementById("searchSection").classList.remove("hidden");
   document.getElementById("welcome").textContent =
@@ -170,6 +176,7 @@ function showSearch(user){
 }
 
 function logout(){
+  document.body.classList.remove("logged-in");
   localStorage.removeItem("niko_saved_login");
   location.reload();
 }
