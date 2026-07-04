@@ -50,6 +50,8 @@ footer{text-align:center;margin-top:30px}.phone-link{color:var(--gold);font-weig
 .login-help a{color:var(--gold);font-weight:900;text-decoration:none;font-size:22px;display:inline-block;margin-top:5px}
 .login-note{text-align:center;color:var(--muted);font-size:15px;margin-top:13px}
 .login-btn{width:100%;margin-top:10px}
+.trial-btn{width:100%;margin-top:12px;background:transparent;border:1px solid var(--gold);color:var(--gold)}
+.trial-box{background:#0b111d;border:1px solid #263244;border-radius:18px;padding:14px;margin-top:16px;text-align:center;color:var(--muted);font-size:17px;line-height:1.35}
 @media print{body{background:#fff;color:#000}.wrap{max-width:100%;padding:10px}.login-card,.search-row,#result,.info,.logout,footer,#status,.actions:not(.print-actions){display:none!important}.card,.order-card{border:0;background:#fff;color:#000;padding:0}.print-area-title{display:block;color:#000;text-align:center}.order-table th,.order-table td{border-bottom:1px solid #ccc}.total-line{color:#000}}
 @media(max-width:620px){.search-row{flex-direction:column}.manual-add{grid-template-columns:1fr}button{width:100%}.price{font-size:58px}.wrap{padding-top:20px}}
 </style>
@@ -67,6 +69,7 @@ footer{text-align:center;margin-top:30px}.phone-link{color:var(--gold);font-weig
     <input id="usernameInput" placeholder="Username" autocomplete="username" />
     <input id="passwordInput" type="password" placeholder="Password" autocomplete="current-password" />
     <button class="login-btn" onclick="login()">Login</button>
+    <div class="trial-box">New customer? Try price search free for 7 days.<br><button class="trial-btn" onclick="startFreeTrial()">Start Free 7-Day Trial</button></div>
     <p id="loginMessage" class="status"></p>
     <div class="login-help">Need help to login? Call or text Niko Auto Core USA<br><a href="tel:+14694222777">Phone: (469) 422-2777</a></div>
     <div class="login-note">Prices are not hedged. Confirm before sale.</div>
@@ -110,6 +113,8 @@ let users = [];
 let currentResult = null;
 let orderItems = [];
 let loggedInUsername = "guest";
+const TRIAL_KEY = "niko_free_trial_start_v12";
+const TRIAL_DAYS = 7;
 
 function norm(v){return String(v||"").toUpperCase().replace(/[\s\-_./]/g,"");}
 function cleanPrice(v){
@@ -121,6 +126,36 @@ function cleanPrice(v){
 }
 function esc(v){
   return String(v ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+}
+
+function trialInfo(){
+  const start = Number(localStorage.getItem(TRIAL_KEY) || 0);
+  if(!start) return {started:false, active:false, daysLeft:0};
+  const ms = Date.now() - start;
+  const daysUsed = Math.floor(ms / (24*60*60*1000));
+  const daysLeft = Math.max(0, TRIAL_DAYS - daysUsed);
+  return {started:true, active: ms < TRIAL_DAYS*24*60*60*1000, daysLeft};
+}
+function startFreeTrial(){
+  const info = trialInfo();
+  if(info.started && !info.active){
+    document.getElementById("loginMessage").innerHTML = '<span class="error">Free trial expired. Please login or call Niko Auto Core USA.</span>';
+    return;
+  }
+  if(!info.started){ localStorage.setItem(TRIAL_KEY, String(Date.now())); }
+  showSearch({username:"trial", name:"Free Trial", company:"7 days"});
+  const nowInfo = trialInfo();
+  document.getElementById("welcome").textContent = "Free Trial - " + nowInfo.daysLeft + " day" + (nowInfo.daysLeft===1?"":"s") + " left";
+}
+function checkTrialOnLoginScreen(){
+  const info = trialInfo();
+  const msg = document.getElementById("loginMessage");
+  if(!msg) return;
+  if(info.started && info.active){
+    msg.textContent = "Free trial active: " + info.daysLeft + " day" + (info.daysLeft===1?"":"s") + " left.";
+  }else if(info.started && !info.active){
+    msg.innerHTML = '<span class="error">Free trial expired. Please login.</span>';
+  }
 }
 
 async function loadUsers(){
@@ -350,7 +385,8 @@ document.getElementById("searchInput").addEventListener("keydown", e => { if(e.k
 document.getElementById("manualCodeInput").addEventListener("keydown", e => { if(e.key === "Enter") addManualToOrder(); });
 document.getElementById("manualPriceInput").addEventListener("keydown", e => { if(e.key === "Enter") addManualToOrder(); });
 
-// Login is not saved in browser in this version. Every new browser open requires login.
+checkTrialOnLoginScreen();
+// Login is not saved in browser. Free trial is saved for 7 days in this browser.
 </script>
 </body>
 </html>
