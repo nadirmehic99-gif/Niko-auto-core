@@ -1,1 +1,5 @@
-Upload/replace index.html and converters.json. This version adds View Image input and matches serials split by spaces. Keep your existing Live_Market_Price.xlsx, users.json, and image .webp files.
+Niko Auto Core USA - User Access Version
+
+No 7-day trial. No payment. No expiration.
+Upload/replace index.html and converters.json in GitHub. Keep your users.json, Live_Market_Price.xlsx, and images folder.
+Customers still login with username/password from users.json.
