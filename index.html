@@ -84,14 +84,34 @@ function findGuide(code){
  return null;
 }
 function imageFile(g){if(!g) return ""; return (g.image_file || String(g.image||"").split('/').pop() || "");}
+function cleanImageName(v){
+ const raw=String(v||"").trim();
+ return raw.split('/').pop().replace(/[^A-Za-z0-9._-]/g, "");
+}
+function imageTryList(code){
+ const base=cleanImageName(code);
+ if(!base) return [];
+ const hasExt=/\.(png|jpe?g|webp|gif)$/i.test(base);
+ const names=hasExt ? [base] : [base+".png", base+".jpg", base+".jpeg", base+".webp", base+".gif"];
+ return names.map(n => "images/" + n);
+}
+function autoImageHtml(code, captionText){
+ const tries=imageTryList(code);
+ if(!tries.length) return `<div class="img-note">No image name entered.</div>`;
+ const first=esc(tries[0]);
+ const list=tries.map(esc).join('|');
+ const caption=esc(captionText || ("Image lookup: " + code));
+ return `<div class="guide-image-box"><img src="${first}" data-tries="${list}" data-pos="0" onerror="var a=this.dataset.tries.split('|');var p=Number(this.dataset.pos||0)+1;if(p<a.length){this.dataset.pos=p;this.src=a[p]+'?cache='+Date.now();}else{this.parentElement.innerHTML='<div class=&quot;img-note&quot;>No image found in images folder. File name must match serial, example: ${esc(cleanImageName(code))}.png</div>';}"><div class="guide-caption">${caption}</div></div>`;
+}
 function guideImageHtml(code){
  const g=findGuide(code);
- if(!g) return `<div class="img-note">No guide image found for this serial yet.</div>`;
+ if(!g) return autoImageHtml(code, "Image lookup: " + code);
  const file=imageFile(g);
+ if(!file) return autoImageHtml(g.Code||code, "Image lookup: " + (g.Code||code));
  const img1=esc(file);
  const img2=esc("images/"+file);
  const caption=esc((g.Make_Category||"") + " • Code " + (g.Code||g.code||"") + " • PDF page " + (g.PDF_Page||""));
- return `<div class="guide-image-box"><img src="${img1}" onerror="if(!this.dataset.retry){this.dataset.retry=1;this.src='${img2}'}else{this.parentElement.style.display='none'}"><div class="guide-caption">Guide image: ${caption}</div></div>`;
+ return `<div class="guide-image-box"><img src="${img1}" onerror="if(!this.dataset.retry){this.dataset.retry=1;this.src='${img2}'}else{this.outerHTML='${autoImageHtml(g.Code||code, "Image lookup: " + (g.Code||code)).replace(/`/g, "&#96;").replace(/'/g, "&#39;")}' }"><div class="guide-caption">Guide image: ${caption}</div></div>`;
 }
 function viewImageOnly(){
  const raw=document.getElementById("imageSearchInput").value.trim() || document.getElementById("searchInput").value.trim();
@@ -101,7 +121,7 @@ function viewImageOnly(){
  if(!raw){result.innerHTML="Enter serial to view image.";return;}
  const g=findGuide(raw);
  if(g){result.innerHTML=`<div class="code">Guide image for: ${esc(g.Code||raw)}</div>${guideImageHtml(g.Code||raw)}<span class="small">This is image lookup only. Search button still finds price.</span>`;return;}
- result.innerHTML=`No guide image found for <b>${esc(raw)}</b><br><span class="small">Try full serial number, not only the last digits.</span>`;
+ result.innerHTML=`<div class="code">Image for: ${esc(raw)}</div>${autoImageHtml(raw, "Image lookup: " + raw)}<span class="small">This checks images folder automatically: .png, .jpg, .jpeg, .webp, .gif</span>`;
 }
 function resultExactHtml(code, price){return `<div class="code">Code: ${esc(code)}</div><div class="price">${esc(cleanPrice(price))}</div><p class="status">Current customer price</p>${guideImageHtml(code)}`;}
 function searchCode(){const raw = document.getElementById("searchInput").value.trim(); const q = norm(raw); const result = document.getElementById("result"); currentResult = null; document.getElementById("addOrderBtn").classList.add("hidden"); if(!q){ result.innerHTML = "Enter converter code."; return; } if(!priceRows.length){ result.innerHTML = "Price list not loaded yet."; return; } const exact = priceRows.find(x => norm(x.code) === q); if(exact){currentResult = {code: exact.code, price: cleanPrice(exact.price)}; document.getElementById("addOrderBtn").classList.remove("hidden"); result.innerHTML = resultExactHtml(exact.code, exact.price); return;} const sim = priceRows.filter(x => norm(x.code).includes(q)).slice(0,8); if(sim.length){window.nikoSimilar = sim.map(x => ({code:x.code, price:cleanPrice(x.price)})); result.innerHTML = `<div class="code">No exact match. Similar:</div>` + window.nikoSimilar.map((x,i) => `<div class="similar-row"><span>${esc(x.code)}: <b>${esc(x.price)}</b></span><button class="similar-add" onclick="showSimilarAndAdd(${i}, false)">View</button><button class="similar-add" onclick="addSimilarToOrder(${i})">+ Add</button></div>`).join(""); return;} const guide=findGuide(raw); if(guide){result.innerHTML = `<div class="code">No price match. Guide image for: ${esc(guide.Code||raw)}</div>${guideImageHtml(guide.Code||raw)}<span class="small">Call Niko Auto Core USA for manual price check.</span>`; return;} result.innerHTML = `No match for <b>${esc(raw)}</b><br><span class="small">Call Niko Auto Core USA for manual check.</span>`;}
