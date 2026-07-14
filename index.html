@@ -35,7 +35,7 @@ footer{text-align:center;margin-top:30px}.phone-link{color:var(--gold);font-weig
   <button class="login-btn" onclick="login()">Login</button>
   <p id="loginMessage" class="status"></p>
   <div class="login-help">Need help to login? Call or text Niko Auto Core USA<br><a href="tel:+14694222777">Phone: (469) 422-2777</a></div>
-  <div class="login-note">User access only. No trial, no payment, no expiration. Prices are not hedged. Confirm before sale.</div>
+  <div class="login-note">New customers receive a 14-day free trial. After the trial expires, call Niko Auto Core USA to activate access. Prices are not hedged. Confirm before sale.</div>
  </section>
  <section id="searchSection" class="card hidden">
   <p id="welcome" class="welcome"></p>
@@ -58,12 +58,26 @@ let currentResult = null;
 let orderItems = [];
 let loggedInUsername = "guest";
 let guideRows = [];
+const TRIAL_DAYS = 14;
+const TRIAL_MS = TRIAL_DAYS * 24 * 60 * 60 * 1000;
+function trialKey(username){return "niko_trial_start_" + String(username||"").trim().toLowerCase();}
+function isAdminUser(user){return String(user?.role||"").toLowerCase() === "admin" || user?.admin === true;}
+function hasFullAccess(user){return isAdminUser(user) || user?.paid === true || user?.subscribed === true || user?.trialBypass === true || user?.access === "full";}
+function getTrialStatus(user){
+ if(hasFullAccess(user)) return {allowed:true, full:true, daysLeft:null, expiresAt:null};
+ const key = trialKey(user.username);
+ let start = Number(localStorage.getItem(key));
+ if(!Number.isFinite(start) || start <= 0){start = Date.now(); localStorage.setItem(key, String(start));}
+ const expiresAt = start + TRIAL_MS;
+ const remaining = expiresAt - Date.now();
+ return {allowed:remaining > 0, full:false, daysLeft:Math.max(0, Math.ceil(remaining / 86400000)), expiresAt};
+}
 function norm(v){return String(v||"").toUpperCase().replace(/[\s\-_./]/g,"");}
 function cleanPrice(v){let s = String(v ?? "").trim(); if(!s) return ""; let n = Number(s.replace(/[$, ]/g,"")); if(Number.isFinite(n)) return "$" + Math.round(n).toLocaleString(); return s;}
 function esc(v){return String(v ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));}
 async function loadUsers(){const res = await fetch("users.json?cache=" + Date.now()); if(!res.ok) throw new Error("users.json not found"); users = await res.json();}
-async function login(){const msg = document.getElementById("loginMessage"); try{if(!users.length) await loadUsers();}catch(e){msg.innerHTML = '<span class="error">Cannot load users.json.</span>'; return;} const username = document.getElementById("usernameInput").value.trim().toLowerCase(); const password = document.getElementById("passwordInput").value; const user = users.find(u => String(u.username).toLowerCase() === username && String(u.password) === password); if(!user){msg.innerHTML = '<span class="error">Wrong username or password.</span>'; return;} if(user.active === false){msg.innerHTML = '<span class="error">This account is locked. Call Niko Auto Core USA.</span>'; return;} showSearch(user);}
-function showSearch(user){loggedInUsername = user.username || "guest"; document.body.classList.add("logged-in"); document.getElementById("loginSection").classList.add("hidden"); document.getElementById("searchSection").classList.remove("hidden"); document.getElementById("welcome").textContent = "Welcome, " + (user.name || user.username) + (user.company ? " - " + user.company : ""); loadExcel(); loadGuideImages(); loadOrder(); renderOrder();}
+async function login(){const msg = document.getElementById("loginMessage"); try{if(!users.length) await loadUsers();}catch(e){msg.innerHTML = '<span class="error">Cannot load users.json.</span>'; return;} const username = document.getElementById("usernameInput").value.trim().toLowerCase(); const password = document.getElementById("passwordInput").value; const user = users.find(u => String(u.username).toLowerCase() === username && String(u.password) === password); if(!user){msg.innerHTML = '<span class="error">Wrong username or password.</span>'; return;} if(user.active === false){msg.innerHTML = '<span class="error">This account is locked. Call Niko Auto Core USA.</span>'; return;} const trial=getTrialStatus(user); if(!trial.allowed){msg.innerHTML = '<span class="error">Your 14-day free trial has expired. Call or text Niko Auto Core USA at (469) 422-2777 to activate access.</span>'; return;} showSearch(user, trial);}
+function showSearch(user, trial){loggedInUsername = user.username || "guest"; document.body.classList.add("logged-in"); document.getElementById("loginSection").classList.add("hidden"); document.getElementById("searchSection").classList.remove("hidden"); let welcome = "Welcome, " + (user.name || user.username) + (user.company ? " - " + user.company : ""); if(trial && !trial.full) welcome += " • Free trial: " + trial.daysLeft + (trial.daysLeft===1 ? " day" : " days") + " remaining"; document.getElementById("welcome").textContent = welcome; loadExcel(); loadGuideImages(); loadOrder(); renderOrder();}
 function logout(){document.body.classList.remove("logged-in"); loggedInUsername = "guest"; location.reload();}
 async function loadExcel(){if(priceRows.length) return; try{const res = await fetch("Live_Market_Price.xlsx?cache=" + Date.now()); if(!res.ok) throw new Error("Excel file not found."); const ab = await res.arrayBuffer(); const wb = XLSX.read(ab, {type:"array", cellDates:false}); const ws = wb.Sheets[wb.SheetNames[0]]; const rows = XLSX.utils.sheet_to_json(ws, {header:1, raw:false, defval:""}); priceRows = []; for(let r = 21; r < rows.length; r++){const row = rows[r] || []; const code = String(row[0] ?? "").trim(); const price = String(row[2] ?? "").trim(); if(code && price && code.toLowerCase() !== "code"){priceRows.push({code, price});}} document.getElementById("status").textContent = `Ready: ${priceRows.length.toLocaleString()} prices loaded. Images: ${guideRows.length.toLocaleString()} loaded.`;}catch(e){document.getElementById("status").textContent = "Could not load Live_Market_Price.xlsx. Make sure file name is exact."; document.getElementById("result").innerHTML = `<span class="small">${e.message}</span>`;}}
 async function loadGuideImages(){if(guideRows.length) return; const paths=["converters.json?cache="+Date.now(),"data/converters.json?cache="+Date.now()]; for(const p of paths){try{const res=await fetch(p); if(res.ok){guideRows=await res.json(); break;}}catch(e){}} if(document.getElementById("status")){document.getElementById("status").textContent = `Ready: ${priceRows.length.toLocaleString()} prices loaded. Images: ${guideRows.length.toLocaleString()} loaded.`;}}
