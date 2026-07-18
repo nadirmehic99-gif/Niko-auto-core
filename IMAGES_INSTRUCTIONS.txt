@@ -1,0 +1,1 @@
+Put converter pictures in an images folder on GitHub. Name each picture exactly like the serial code, for example: XL34 BEC.jpg. The app also checks compact and normalized file names and JPG/PNG/WEBP formats.

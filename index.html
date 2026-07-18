@@ -41,7 +41,7 @@ footer{text-align:center;margin-top:30px}.phone-link{color:var(--gold);font-weig
 .qtybox{width:82px;font-size:18px;padding:8px;border-radius:10px;margin:0;text-align:center}
 .remove-btn{font-size:14px;padding:8px 10px;border-radius:10px;background:transparent;border:1px solid var(--red);color:var(--red)}
 .total-line{text-align:right;font-size:28px;font-weight:900;color:var(--green);margin-top:14px}
-.similar-row{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 4px;border-bottom:1px solid #1d2736;font-size:27px;line-height:1.25}.similar-row:last-child{border-bottom:0}.similar-row span{font-weight:800}.similar-row b{color:var(--green);font-size:30px}.similar-add{font-size:21px;padding:15px 22px;border-radius:14px;min-width:110px;width:auto}.print-area-title{display:none}
+.similar-row{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 4px;border-bottom:1px solid #1d2736;line-height:1.25}.similar-row:last-child{border-bottom:0}.similar-main{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.similar-code{color:var(--green);font-size:32px;font-weight:900;letter-spacing:.3px}.similar-price{color:#fff;font-size:30px;font-weight:900}.similar-buttons{display:flex;gap:10px;flex-wrap:wrap}.similar-add,.image-btn{font-size:19px;padding:14px 18px;border-radius:14px;min-width:105px;width:auto}.image-btn{background:transparent;border:2px solid var(--green);color:var(--green)}.exact-code{color:var(--green);font-size:38px;font-weight:900;letter-spacing:.4px}.exact-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.image-modal{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9999;display:flex;align-items:center;justify-content:center;padding:18px}.image-modal.hidden{display:none}.image-box{width:min(720px,100%);max-height:92vh;overflow:auto;background:#101827;border:1px solid #334158;border-radius:20px;padding:16px;text-align:center}.image-box img{max-width:100%;max-height:70vh;border-radius:14px;background:#fff}.image-title{font-size:27px;font-weight:900;color:var(--green);margin:4px 0 14px}.image-message{color:var(--muted);font-size:18px;margin:14px}.close-image{margin-top:14px;background:var(--red);font-size:18px;padding:12px 20px}.print-area-title{display:none}
 .login-card{position:relative;overflow:hidden;background:linear-gradient(180deg,rgba(20,28,39,.98),rgba(10,15,25,.98));box-shadow:0 20px 55px rgba(0,0,0,.35)}
 .login-card:before{content:"";position:absolute;inset:0;border-top:5px solid var(--gold);pointer-events:none}
 .login-logo{text-align:center;font-size:clamp(31px,6vw,48px);font-weight:900;letter-spacing:1px;line-height:1.05;margin:8px 0 10px;color:#fff}
@@ -51,7 +51,7 @@ footer{text-align:center;margin-top:30px}.phone-link{color:var(--gold);font-weig
 .login-note{text-align:center;color:var(--muted);font-size:15px;margin-top:13px}
 .login-btn{width:100%;margin-top:10px}
 @media print{body{background:#fff;color:#000}.wrap{max-width:100%;padding:10px}.login-card,.search-row,#result,.info,.logout,footer,#status,.actions:not(.print-actions){display:none!important}.card,.order-card{border:0;background:#fff;color:#000;padding:0}.print-area-title{display:block;color:#000;text-align:center}.order-table th,.order-table td{border-bottom:1px solid #ccc}.total-line{color:#000}}
-@media(max-width:620px){.search-row{flex-direction:column}.manual-add{grid-template-columns:1fr}button{width:100%}.price{font-size:58px}.wrap{padding-top:20px}.similar-row{font-size:24px;align-items:stretch;flex-direction:column;padding:18px 2px}.similar-row b{font-size:29px}.similar-add{width:100%;font-size:22px;padding:17px}}
+@media(max-width:620px){.search-row{flex-direction:column}.manual-add{grid-template-columns:1fr}button{width:100%}.price{font-size:58px}.wrap{padding-top:20px}.similar-row{align-items:stretch;flex-direction:column;padding:20px 2px}.similar-code{font-size:31px}.similar-price{font-size:28px}.similar-buttons{display:grid;grid-template-columns:1fr 1fr}.similar-add,.image-btn{width:100%;font-size:20px;padding:16px 10px}.exact-code{font-size:34px}.exact-actions{display:grid;grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -100,6 +100,15 @@ footer{text-align:center;margin-top:30px}.phone-link{color:var(--gold);font-weig
     <div class="info">Customers see code and final price only. Market numbers and formulas are not shown on this page.</div>
     <button class="logout" onclick="logout()">Logout</button>
   </section>
+
+  <div id="imageModal" class="image-modal hidden" onclick="closeImageModal(event)">
+    <div class="image-box" onclick="event.stopPropagation()">
+      <div id="imageTitle" class="image-title">Converter Image</div>
+      <div id="imageMessage" class="image-message">Loading image...</div>
+      <img id="converterImage" class="hidden" alt="Catalytic converter image" />
+      <br><button class="close-image" onclick="closeImageModal()">Close Image</button>
+    </div>
+  </div>
 
   <footer>Prices are not hedged. Call Niko Auto Core USA to confirm before sale.<br><a class="phone-link" href="tel:+14694222777">Phone: (469) 422-2777</a></footer>
 </main>
@@ -221,8 +230,9 @@ function searchCode(){
     currentResult = {code: exact.code, price: cleanPrice(exact.price)};
     document.getElementById("addOrderBtn").classList.remove("hidden");
     result.innerHTML =
-      `<div class="code">Code: ${exact.code}</div>
+      `<div class="exact-code">${esc(exact.code)}</div>
        <div class="price">${cleanPrice(exact.price)}</div>
+       <div class="exact-actions"><button class="image-btn" onclick='showConverterImage(${JSON.stringify(exact.code)})'>View Image</button></div>
        <p class="status">Current customer price</p>`;
     return;
   }
@@ -233,7 +243,10 @@ function searchCode(){
     result.innerHTML =
       `<div class="code">No exact match. Similar:</div>` +
       window.nikoSimilar.map((x,i) =>
-        `<div class="similar-row"><span>${esc(x.code)}: <b>${esc(x.price)}</b></span><button class="similar-add" onclick="addSimilarToOrder(${i})">+ Add</button></div>`
+        `<div class="similar-row">
+          <div class="similar-main"><span class="similar-code">${esc(x.code)}</span><span class="similar-price">${esc(x.price)}</span></div>
+          <div class="similar-buttons"><button class="image-btn" onclick="showSimilarImage(${i})">View Image</button><button class="similar-add" onclick="addSimilarToOrder(${i})">+ Add</button></div>
+        </div>`
       ).join("");
     return;
   }
@@ -241,6 +254,64 @@ function searchCode(){
   result.innerHTML = `No match for <b>${raw}</b><br><span class="small">Call Niko Auto Core USA for manual check.</span>`;
 }
 
+
+
+function imageCandidates(code){
+  const raw = String(code || "").trim();
+  const normalized = norm(raw);
+  const compact = raw.replace(/\s+/g, "");
+  const safeRaw = encodeURIComponent(raw);
+  const safeCompact = encodeURIComponent(compact);
+  const safeNorm = encodeURIComponent(normalized);
+  const names = [...new Set([safeRaw, safeCompact, safeNorm])];
+  const folders = ["images/", "Images/", "image/", ""];
+  const exts = [".jpg", ".jpeg", ".png", ".webp", ".JPG", ".PNG"];
+  const list = [];
+  folders.forEach(folder => names.forEach(name => exts.forEach(ext => list.push(folder + name + ext))));
+  return list;
+}
+
+function showSimilarImage(i){
+  const item = (window.nikoSimilar || [])[i];
+  if(item) showConverterImage(item.code);
+}
+
+function showConverterImage(code){
+  const modal = document.getElementById("imageModal");
+  const img = document.getElementById("converterImage");
+  const msg = document.getElementById("imageMessage");
+  document.getElementById("imageTitle").textContent = String(code || "Converter Image");
+  modal.classList.remove("hidden");
+  img.classList.add("hidden");
+  img.removeAttribute("src");
+  msg.classList.remove("hidden");
+  msg.textContent = "Loading image...";
+  const candidates = imageCandidates(code);
+  let index = 0;
+  const tryNext = () => {
+    if(index >= candidates.length){
+      img.classList.add("hidden");
+      msg.classList.remove("hidden");
+      msg.textContent = "No image found for this serial.";
+      return;
+    }
+    img.onload = () => {
+      msg.classList.add("hidden");
+      img.classList.remove("hidden");
+    };
+    img.onerror = () => { index++; tryNext(); };
+    img.src = candidates[index] + "?cache=" + Date.now();
+  };
+  tryNext();
+}
+
+function closeImageModal(event){
+  if(event && event.target && event.target.id !== "imageModal") return;
+  const modal = document.getElementById("imageModal");
+  const img = document.getElementById("converterImage");
+  modal.classList.add("hidden");
+  img.removeAttribute("src");
+}
 
 function addSimilarToOrder(i){
   const item = (window.nikoSimilar || [])[i];
