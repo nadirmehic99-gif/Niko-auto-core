@@ -3,425 +3,192 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>Niko Auto Core USA | Customer Login</title>
+<title>Niko Auto Core USA | User Access</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 :root{--card:#141c27;--panel:#080d16;--border:#2a3444;--gold:#e0aa18;--green:#35b84d;--text:#f4f6fb;--muted:#9aa3b2;--red:#ff6b6b}
 *{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#050811,#101725);color:var(--text)}
-.wrap{max-width:760px;margin:auto;padding:42px 18px 80px}
-.site-head{display:none}
-body.logged-in .site-head{display:block}
-body:not(.logged-in) footer{display:none}
-h1{text-align:center;font-size:clamp(35px,7vw,58px);margin:35px 0 8px;letter-spacing:1px;font-weight:900}
-.gold{color:var(--gold)} .subtitle{text-align:center;color:var(--muted);font-size:22px;margin-bottom:34px}
-.card{background:rgba(20,28,39,.96);border:1px solid var(--border);border-radius:24px;padding:28px;margin:22px 0}
-input,button{font-size:22px;border-radius:18px}
-input{width:100%;padding:20px;background:var(--panel);color:var(--text);border:1px solid var(--border);outline:none;margin:8px 0}
-.search-row{display:flex;gap:14px}.search-row input{text-transform:uppercase;margin:0}
-button{background:var(--gold);border:0;color:#111;font-weight:900;padding:18px 30px;cursor:pointer}
-.status,footer{color:var(--muted);line-height:1.45}.result{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:28px;margin-top:24px;min-height:145px;font-size:22px}
-.code{color:var(--muted);font-size:24px}.price{font-size:78px;color:var(--green);font-weight:900;margin-top:12px}
-.info{background:#101827;border:1px solid #27344a;border-radius:18px;padding:18px;margin-top:24px;color:var(--muted);font-size:20px}
+.wrap{max-width:760px;margin:auto;padding:42px 18px 80px}.site-head{display:none}body.logged-in .site-head{display:block}body:not(.logged-in) footer{display:none}
+h1{text-align:center;font-size:clamp(35px,7vw,58px);margin:35px 0 8px;letter-spacing:1px;font-weight:900}.gold{color:var(--gold)} .subtitle{text-align:center;color:var(--muted);font-size:22px;margin-bottom:34px}
+.card{background:rgba(20,28,39,.96);border:1px solid var(--border);border-radius:24px;padding:28px;margin:22px 0}input,button{font-size:22px;border-radius:18px}
+input{width:100%;padding:20px;background:var(--panel);color:var(--text);border:1px solid var(--border);outline:none;margin:8px 0}.search-row{display:flex;gap:14px}.search-row input{text-transform:uppercase;margin:0}
+button{background:var(--gold);border:0;color:#111;font-weight:900;padding:18px 30px;cursor:pointer}.status,footer{color:var(--muted);line-height:1.45}.result{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:28px;margin-top:24px;min-height:145px;font-size:22px}
+.code{color:var(--muted);font-size:24px}.price{font-size:78px;color:var(--green);font-weight:900;margin-top:12px}.info{background:#101827;border:1px solid #27344a;border-radius:18px;padding:18px;margin-top:24px;color:var(--muted);font-size:20px}
 footer{text-align:center;margin-top:30px}.phone-link{color:var(--gold);font-weight:900;text-decoration:none;display:block;margin-top:6px;font-size:20px}.small{font-size:18px;color:var(--muted)}.error{color:var(--red);font-weight:800}
-.hidden{display:none}.login-title{text-align:center;font-size:30px;color:var(--gold);margin:0 0 15px}.login-card{max-width:560px;margin:45px auto}
-.logout{background:transparent;border:1px solid var(--gold);color:var(--gold);font-size:16px;padding:10px 14px;border-radius:12px;margin-top:18px}
-.welcome{color:var(--gold);font-weight:900}
-.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
-.manual-add{display:grid;grid-template-columns:1.5fr 1fr auto;gap:10px;margin-top:16px;align-items:center}
-.manual-add input{font-size:18px;padding:14px;margin:0;border-radius:14px}
-.manual-add button{font-size:18px;padding:14px 18px;border-radius:14px}
-.actions button{font-size:18px;padding:14px 18px;border-radius:14px;width:auto}
-.btn-secondary{background:transparent;border:1px solid var(--gold);color:var(--gold)}
-.btn-danger{background:var(--red);color:#111}
-.order-card{margin-top:18px;background:#0b111d;border:1px solid var(--border);border-radius:20px;padding:18px}
-.order-head{display:flex;justify-content:space-between;gap:12px;align-items:center;font-weight:900;color:var(--gold);font-size:22px;margin-bottom:10px}
-.order-table{width:100%;border-collapse:collapse;font-size:18px}
-.order-table th,.order-table td{border-bottom:1px solid #263244;padding:10px 6px;text-align:left}
-.order-table th{text-transform:uppercase;color:var(--muted);font-size:14px}
-.qtybox{width:82px;font-size:18px;padding:8px;border-radius:10px;margin:0;text-align:center}
-.remove-btn{font-size:14px;padding:8px 10px;border-radius:10px;background:transparent;border:1px solid var(--red);color:var(--red)}
-.total-line{text-align:right;font-size:28px;font-weight:900;color:var(--green);margin-top:14px}
-.similar-row{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 4px;border-bottom:1px solid #1d2736;line-height:1.25}.similar-row:last-child{border-bottom:0}.similar-main{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.similar-code{color:var(--green);font-size:32px;font-weight:900;letter-spacing:.3px}.similar-price{color:#fff;font-size:30px;font-weight:900}.similar-buttons{display:flex;gap:10px;flex-wrap:wrap}.similar-add,.image-btn{font-size:19px;padding:14px 18px;border-radius:14px;min-width:105px;width:auto}.image-btn{background:transparent;border:2px solid var(--green);color:var(--green)}.exact-code{color:var(--green);font-size:38px;font-weight:900;letter-spacing:.4px}.exact-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.image-modal{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9999;display:flex;align-items:center;justify-content:center;padding:18px}.image-modal.hidden{display:none}.image-box{width:min(720px,100%);max-height:92vh;overflow:auto;background:#101827;border:1px solid #334158;border-radius:20px;padding:16px;text-align:center}.image-box img{max-width:100%;max-height:70vh;border-radius:14px;background:#fff}.image-title{font-size:27px;font-weight:900;color:var(--green);margin:4px 0 14px}.image-message{color:var(--muted);font-size:18px;margin:14px}.close-image{margin-top:14px;background:var(--red);font-size:18px;padding:12px 20px}.print-area-title{display:none}
-.login-card{position:relative;overflow:hidden;background:linear-gradient(180deg,rgba(20,28,39,.98),rgba(10,15,25,.98));box-shadow:0 20px 55px rgba(0,0,0,.35)}
-.login-card:before{content:"";position:absolute;inset:0;border-top:5px solid var(--gold);pointer-events:none}
-.login-logo{text-align:center;font-size:clamp(31px,6vw,48px);font-weight:900;letter-spacing:1px;line-height:1.05;margin:8px 0 10px;color:#fff}
-.login-sub{text-align:center;color:var(--muted);font-size:18px;margin:0 0 22px}
-.login-help{background:#0b111d;border:1px solid #263244;border-radius:18px;padding:16px;margin-top:18px;text-align:center;color:var(--muted);line-height:1.35;font-size:18px}
-.login-help a{color:var(--gold);font-weight:900;text-decoration:none;font-size:22px;display:inline-block;margin-top:5px}
-.login-note{text-align:center;color:var(--muted);font-size:15px;margin-top:13px}
-.login-btn{width:100%;margin-top:10px}
+.hidden{display:none}.login-title{text-align:center;font-size:30px;color:var(--gold);margin:0 0 15px}.login-card{max-width:560px;margin:45px auto}.logout{background:transparent;border:1px solid var(--gold);color:var(--gold);font-size:16px;padding:10px 14px;border-radius:12px;margin-top:18px}.welcome{color:var(--gold);font-weight:900}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}.image-lookup{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:12px}.image-lookup input{font-size:18px;padding:14px;margin:0;border-radius:14px}.image-lookup button{font-size:18px;padding:14px 18px;border-radius:14px}.manual-add{display:grid;grid-template-columns:1.5fr 1fr auto;gap:10px;margin-top:16px;align-items:center}.manual-add input{font-size:18px;padding:14px;margin:0;border-radius:14px}.manual-add button{font-size:18px;padding:14px 18px;border-radius:14px}.actions button{font-size:18px;padding:14px 18px;border-radius:14px;width:auto}.btn-secondary{background:transparent;border:1px solid var(--gold);color:var(--gold)}.btn-danger{background:var(--red);color:#111}
+.order-card{margin-top:18px;background:#0b111d;border:1px solid var(--border);border-radius:20px;padding:18px}.order-head{display:flex;justify-content:space-between;gap:12px;align-items:center;font-weight:900;color:var(--gold);font-size:22px;margin-bottom:10px}.order-table{width:100%;border-collapse:collapse;font-size:18px}.order-table th,.order-table td{border-bottom:1px solid #263244;padding:10px 6px;text-align:left}.order-table th{text-transform:uppercase;color:var(--muted);font-size:14px}.qtybox{width:82px;font-size:18px;padding:8px;border-radius:10px;margin:0;text-align:center}.remove-btn{font-size:14px;padding:8px 10px;border-radius:10px;background:transparent;border:1px solid var(--red);color:var(--red)}.total-line{text-align:right;font-size:28px;font-weight:900;color:var(--green);margin-top:14px}
+.similar-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid #263244;min-height:82px}.similar-row:last-child{border-bottom:0}.similar-code-price{min-width:0;color:var(--green);font-size:clamp(28px,5.5vw,42px);line-height:1.08;font-weight:900;letter-spacing:.2px;overflow-wrap:anywhere}.similar-code-price b{font-weight:900}.similar-add{font-size:20px;padding:14px 20px;border-radius:13px;width:auto;min-width:112px;min-height:54px}.similar-view{background:var(--gold);color:#111}.similar-order{background:var(--green);color:#fff}.print-area-title{display:none}
+.guide-image-box{margin-top:18px;background:#fff;border-radius:18px;overflow:hidden;border:1px solid #36445a}.guide-image-box img{width:100%;max-height:430px;object-fit:contain;display:block;background:#fff}.guide-caption{font-size:14px;color:#111;padding:8px 12px;background:#f2f2f2}.img-note{font-size:16px;color:var(--muted);margin-top:10px}
+.login-card{position:relative;overflow:hidden;background:linear-gradient(180deg,rgba(20,28,39,.98),rgba(10,15,25,.98));box-shadow:0 20px 55px rgba(0,0,0,.35)}.login-card:before{content:"";position:absolute;inset:0;border-top:5px solid var(--gold);pointer-events:none}.login-logo{text-align:center;font-size:clamp(31px,6vw,48px);font-weight:900;letter-spacing:1px;line-height:1.05;margin:8px 0 10px;color:#fff}.login-sub{text-align:center;color:var(--muted);font-size:18px;margin:0 0 22px}.login-help{background:#0b111d;border:1px solid #263244;border-radius:18px;padding:16px;margin-top:18px;text-align:center;color:var(--muted);line-height:1.35;font-size:18px}.login-help a{color:var(--gold);font-weight:900;text-decoration:none;font-size:22px;display:inline-block;margin-top:5px}.login-note{text-align:center;color:var(--muted);font-size:15px;margin-top:13px}.login-btn{width:100%;margin-top:10px}.trial-btn{width:100%;margin-top:12px;background:transparent;border:1px solid var(--gold);color:var(--gold)}.trial-box{background:#0b111d;border:1px solid #263244;border-radius:18px;padding:14px;margin-top:16px;text-align:center;color:var(--muted);font-size:17px;line-height:1.35}
 @media print{body{background:#fff;color:#000}.wrap{max-width:100%;padding:10px}.login-card,.search-row,#result,.info,.logout,footer,#status,.actions:not(.print-actions){display:none!important}.card,.order-card{border:0;background:#fff;color:#000;padding:0}.print-area-title{display:block;color:#000;text-align:center}.order-table th,.order-table td{border-bottom:1px solid #ccc}.total-line{color:#000}}
-@media(max-width:620px){.search-row{flex-direction:column}.manual-add{grid-template-columns:1fr}button{width:100%}.price{font-size:58px}.wrap{padding-top:20px}.similar-row{align-items:stretch;flex-direction:column;padding:20px 2px}.similar-code{font-size:31px}.similar-price{font-size:28px}.similar-buttons{display:grid;grid-template-columns:1fr 1fr}.similar-add,.image-btn{width:100%;font-size:20px;padding:16px 10px}.exact-code{font-size:34px}.exact-actions{display:grid;grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.search-row{flex-direction:column}.image-lookup{grid-template-columns:1fr}.manual-add{grid-template-columns:1fr}button{width:100%}.price{font-size:66px}.wrap{padding-top:20px}.guide-image-box img{max-height:340px}.result{padding:20px 18px;font-size:24px}.similar-row{grid-template-columns:minmax(0,1fr) 92px 92px;gap:8px;padding:15px 0;min-height:78px}.similar-code-price{font-size:clamp(27px,7vw,36px)}.similar-add{font-size:18px;padding:12px 8px;min-width:0;min-height:52px}.search-row input{font-size:30px;padding:22px}.search-row button{font-size:24px;padding:18px}.order-head{font-size:24px}.total-line{font-size:32px}}
 </style>
 </head>
 <body>
 <main class="wrap">
-  <div class="site-head">
-    <h1><span class="gold">NIKO</span> AUTO CORE USA</h1>
-    <div class="subtitle">Customer Price Search</div>
-  </div>
-
-  <section id="loginSection" class="card login-card">
-    <div class="login-logo"><span class="gold">NIKO</span> AUTO CORE USA</div>
-    <div class="login-sub">Customer Login • Price Search • Orders</div>
-    <input id="usernameInput" placeholder="Username" autocomplete="username" />
-    <input id="passwordInput" type="password" placeholder="Password" autocomplete="current-password" />
-    <button class="login-btn" onclick="login()">Login</button>
-    <p id="loginMessage" class="status"></p>
-    <div class="login-help">Need help to login? Call or text Niko Auto Core USA<br><a href="tel:+14694222777">Phone: (469) 422-2777</a></div>
-    <div class="login-note">Prices are not hedged. Confirm before sale.</div>
-  </section>
-
-  <section id="searchSection" class="card hidden">
-    <p id="welcome" class="welcome"></p>
-    <div class="search-row">
-      <input id="searchInput" placeholder="TYPE CONVERTER CODE..." autocomplete="off" />
-      <button onclick="searchCode()">Search</button>
-    </div>
-    <p id="status" class="status">Loading Live_Market_Price.xlsx...</p>
-    <div id="result" class="result">Type converter code to search.</div>
-    <div class="manual-add">
-      <input id="manualCodeInput" placeholder="EXTRA CODE TO ORDER" autocomplete="off" />
-      <input id="manualPriceInput" placeholder="PRICE" inputmode="numeric" autocomplete="off" />
-      <button onclick="addManualToOrder()">Add Extra</button>
-    </div>
-    <div class="actions">
-      <button id="addOrderBtn" class="hidden" onclick="addCurrentToOrder()">Add to Order</button>
-      <button class="btn-secondary" onclick="printOrder()">Print Order</button>
-      <button class="btn-secondary" onclick="copyOrderText()">Copy Order</button>
-      <button class="btn-danger" onclick="clearOrder()">Clear Order</button>
-    </div>
-    <div class="order-card" id="orderCard">
-      <h2 class="print-area-title">Niko Auto Core USA Order</h2>
-      <div class="order-head"><span>Customer Order</span><span id="orderCount">0 items</span></div>
-      <div id="orderList" class="status">No items added yet.</div>
-      <div id="orderTotal" class="total-line">Total: $0</div>
-    </div>
-    <div class="info">Customers see code and final price only. Market numbers and formulas are not shown on this page.</div>
-    <button class="logout" onclick="logout()">Logout</button>
-  </section>
-
-  <div id="imageModal" class="image-modal hidden" onclick="closeImageModal(event)">
-    <div class="image-box" onclick="event.stopPropagation()">
-      <div id="imageTitle" class="image-title">Converter Image</div>
-      <div id="imageMessage" class="image-message">Loading image...</div>
-      <img id="converterImage" class="hidden" alt="Catalytic converter image" />
-      <br><button class="close-image" onclick="closeImageModal()">Close Image</button>
-    </div>
-  </div>
-
-  <footer>Prices are not hedged. Call Niko Auto Core USA to confirm before sale.<br><a class="phone-link" href="tel:+14694222777">Phone: (469) 422-2777</a></footer>
+ <div class="site-head"><h1><span class="gold">NIKO</span> AUTO CORE USA</h1><div class="subtitle">Customer Price Search</div></div>
+ <section id="loginSection" class="card login-card">
+  <div class="login-logo"><span class="gold">NIKO</span> AUTO CORE USA</div><div class="login-sub">User Access • Price Search • Orders</div>
+  <input id="usernameInput" placeholder="Username" autocomplete="username" />
+  <input id="passwordInput" type="password" placeholder="Password" autocomplete="current-password" />
+  <button class="login-btn" onclick="login()">Login</button>
+  <button class="trial-btn" onclick="enterFreeTrial()">PRESS HERE TO ENTER 14-DAY FREE TRIAL</button>
+  <p id="loginMessage" class="status"></p>
+  <div class="login-help">Need help to login? Call or text Niko Auto Core USA<br><a href="tel:+14694222777">Phone: (469) 422-2777</a></div>
+  <div class="login-note">New customers receive a 14-day free trial. After the trial expires, call Niko Auto Core USA to activate access. Prices are not hedged. Confirm before sale.</div>
+ </section>
+ <section id="searchSection" class="card hidden">
+  <p id="welcome" class="welcome"></p>
+  <div class="search-row"><input id="searchInput" placeholder="TYPE CONVERTER CODE..." autocomplete="off" /><button onclick="searchCode()">Search</button></div>
+  <div class="image-lookup"><input id="imageSearchInput" placeholder="VIEW IMAGE BY SERIAL" autocomplete="off" /><button onclick="viewImageOnly()">View Image</button></div>
+  <p id="status" class="status">Loading Live_Market_Price.xlsx...</p>
+  <div id="result" class="result">Type converter code to search.</div>
+  <div class="manual-add"><input id="manualCodeInput" placeholder="EXTRA CODE TO ORDER" autocomplete="off" /><input id="manualPriceInput" placeholder="PRICE" inputmode="numeric" autocomplete="off" /><button onclick="addManualToOrder()">Add Extra</button></div>
+  <div class="actions"><button id="addOrderBtn" class="hidden" onclick="addCurrentToOrder()">Add to Order</button><button class="btn-secondary" onclick="printOrder()">Print Order</button><button class="btn-secondary" onclick="copyOrderText()">Copy Order</button><button class="btn-danger" onclick="clearOrder()">Clear Order</button></div>
+  <div class="order-card" id="orderCard"><h2 class="print-area-title">Niko Auto Core USA Order</h2><div class="order-head"><span>Customer Order</span><span id="orderCount">0 items</span></div><div id="orderList" class="status">No items added yet.</div><div id="orderTotal" class="total-line">Total: $0</div></div>
+  <div class="info">Customers see code and final price only. Market numbers and formulas are not shown on this page.</div>
+  <button class="logout" onclick="logout()">Logout</button>
+ </section>
+ <footer>Prices are not hedged. Call Niko Auto Core USA to confirm before sale.<br><a class="phone-link" href="tel:+14694222777">Phone: (469) 422-2777</a></footer>
 </main>
-
 <script>
 let priceRows = [];
 let users = [];
 let currentResult = null;
 let orderItems = [];
 let loggedInUsername = "guest";
-
+let guideRows = [];
+const TRIAL_DAYS = 14;
+const TRIAL_MS = TRIAL_DAYS * 24 * 60 * 60 * 1000;
+function trialKey(username){return "niko_trial_start_" + String(username||"").trim().toLowerCase();}
+function isAdminUser(user){return String(user?.role||"").toLowerCase() === "admin" || user?.admin === true;}
+function hasFullAccess(user){return isAdminUser(user) || user?.paid === true || user?.subscribed === true || user?.trialBypass === true || user?.access === "full";}
+function getTrialStatus(user){
+ if(hasFullAccess(user)) return {allowed:true, full:true, daysLeft:null, expiresAt:null};
+ const key = trialKey(user.username);
+ let start = Number(localStorage.getItem(key));
+ if(!Number.isFinite(start) || start <= 0){start = Date.now(); localStorage.setItem(key, String(start));}
+ const expiresAt = start + TRIAL_MS;
+ const remaining = expiresAt - Date.now();
+ return {allowed:remaining > 0, full:false, daysLeft:Math.max(0, Math.ceil(remaining / 86400000)), expiresAt};
+}
 function norm(v){return String(v||"").toUpperCase().replace(/[\s\-_./]/g,"");}
-function cleanPrice(v){
-  let s = String(v ?? "").trim();
-  if(!s) return "";
-  let n = Number(s.replace(/[$, ]/g,""));
-  if(Number.isFinite(n)) return "$" + Math.round(n).toLocaleString();
-  return s;
+function cleanPrice(v){let s = String(v ?? "").trim(); if(!s) return ""; let n = Number(s.replace(/[$, ]/g,"")); if(Number.isFinite(n)) return "$" + Math.round(n).toLocaleString(); return s;}
+function esc(v){return String(v ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));}
+async function loadUsers(){const res = await fetch("users.json?cache=" + Date.now()); if(!res.ok) throw new Error("users.json not found"); users = await res.json();}
+function enterFreeTrial(){
+ const msg = document.getElementById("loginMessage");
+ const trialUser = {username:"free_trial", name:"Free Trial Customer", role:"customer"};
+ const trial = getTrialStatus(trialUser);
+ if(!trial.allowed){
+  msg.innerHTML = '<span class="error">Your 14-day free trial has expired. Call or text Niko Auto Core USA at (469) 422-2777 to activate access.</span>';
+  return;
+ }
+ showSearch(trialUser, trial);
 }
-function esc(v){
-  return String(v ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+async function login(){const msg = document.getElementById("loginMessage"); try{if(!users.length) await loadUsers();}catch(e){msg.innerHTML = '<span class="error">Cannot load users.json.</span>'; return;} const username = document.getElementById("usernameInput").value.trim().toLowerCase(); const password = document.getElementById("passwordInput").value; const user = users.find(u => String(u.username).toLowerCase() === username && String(u.password) === password); if(!user){msg.innerHTML = '<span class="error">Wrong username or password.</span>'; return;} if(user.active === false){msg.innerHTML = '<span class="error">This account is locked. Call Niko Auto Core USA.</span>'; return;} const trial=getTrialStatus(user); if(!trial.allowed){msg.innerHTML = '<span class="error">Your 14-day free trial has expired. Call or text Niko Auto Core USA at (469) 422-2777 to activate access.</span>'; return;} showSearch(user, trial);}
+function showSearch(user, trial){loggedInUsername = user.username || "guest"; document.body.classList.add("logged-in"); document.getElementById("loginSection").classList.add("hidden"); document.getElementById("searchSection").classList.remove("hidden"); let welcome = "Welcome, " + (user.name || user.username) + (user.company ? " - " + user.company : ""); if(trial && !trial.full) welcome += " • Free trial: " + trial.daysLeft + (trial.daysLeft===1 ? " day" : " days") + " remaining"; document.getElementById("welcome").textContent = welcome; loadExcel(); loadGuideImages(); loadOrder(); renderOrder();}
+function logout(){document.body.classList.remove("logged-in"); loggedInUsername = "guest"; location.reload();}
+async function loadExcel(){if(priceRows.length) return; try{const res = await fetch("Live_Market_Price.xlsx?cache=" + Date.now()); if(!res.ok) throw new Error("Excel file not found."); const ab = await res.arrayBuffer(); const wb = XLSX.read(ab, {type:"array", cellDates:false}); const ws = wb.Sheets[wb.SheetNames[0]]; const rows = XLSX.utils.sheet_to_json(ws, {header:1, raw:false, defval:""}); priceRows = []; for(let r = 21; r < rows.length; r++){const row = rows[r] || []; const code = String(row[0] ?? "").trim(); const price = String(row[2] ?? "").trim(); if(code && price && code.toLowerCase() !== "code"){priceRows.push({code, price});}} document.getElementById("status").textContent = `Ready: ${priceRows.length.toLocaleString()} prices loaded. Images: ${guideRows.length.toLocaleString()} loaded.`;}catch(e){document.getElementById("status").textContent = "Could not load Live_Market_Price.xlsx. Make sure file name is exact."; document.getElementById("result").innerHTML = `<span class="small">${e.message}</span>`;}}
+async function loadGuideImages(){if(guideRows.length) return; const paths=["converters.json?cache="+Date.now(),"data/converters.json?cache="+Date.now()]; for(const p of paths){try{const res=await fetch(p); if(res.ok){guideRows=await res.json(); break;}}catch(e){}} if(document.getElementById("status")){document.getElementById("status").textContent = `Ready: ${priceRows.length.toLocaleString()} prices loaded. Images: ${guideRows.length.toLocaleString()} loaded.`;}}
+function codeParts(v){return String(v||"").toUpperCase().match(/[A-Z0-9]+/g) || [];}
+function guideCode(g){return String(g.Code||g.code||g.SearchCode||"");}
+function findGuide(code){
+ const q=norm(code);
+ if(!q || !guideRows.length) return null;
+ const parts=codeParts(code).map(norm).filter(x=>x.length>=3);
+ const candidates=[q,...parts];
+ // 1) exact match any full serial or token
+ for(const c of candidates){const hit=guideRows.find(x=>norm(guideCode(x))===c); if(hit) return hit;}
+ // 2) price row has two serials; image row may be one of them
+ for(const c of candidates){const hit=guideRows.find(x=>c.includes(norm(guideCode(x))) || norm(guideCode(x)).includes(c)); if(hit) return hit;}
+ // 3) last 4+ digits/letters partial lookup
+ const longParts=candidates.filter(x=>x.length>=4);
+ for(const c of longParts){const hit=guideRows.find(x=>norm(guideCode(x)).includes(c)); if(hit) return hit;}
+ return null;
 }
-
-async function loadUsers(){
-  const res = await fetch("users.json?cache=" + Date.now());
-  if(!res.ok) throw new Error("users.json not found");
-  users = await res.json();
+function imageFile(g){if(!g) return ""; return (g.image_file || String(g.image||"").split('/').pop() || "");}
+function cleanImageName(v){
+ const raw=String(v||"").trim();
+ return raw.split('/').pop().replace(/[^A-Za-z0-9._-]/g, "");
 }
-
-async function login(){
-  const msg = document.getElementById("loginMessage");
-  try{
-    if(!users.length) await loadUsers();
-  }catch(e){
-    msg.innerHTML = '<span class="error">Cannot load users.json.</span>';
-    return;
-  }
-
-  const username = document.getElementById("usernameInput").value.trim().toLowerCase();
-  const password = document.getElementById("passwordInput").value;
-
-  const user = users.find(u =>
-    String(u.username).toLowerCase() === username &&
-    String(u.password) === password
-  );
-
-  if(!user){
-    msg.innerHTML = '<span class="error">Wrong username or password.</span>';
-    return;
-  }
-
-  if(user.active === false){
-    msg.innerHTML = '<span class="error">This account is locked. Call Niko Auto Core USA.</span>';
-    return;
-  }
-
-  // Do not save login in browser. User must login again after closing/reopening.
-  showSearch(user);
+function imageTryList(code){
+ const base=cleanImageName(code);
+ if(!base) return [];
+ const lower=base.toLowerCase();
+ const upper=base.toUpperCase();
+ const plain=Array.from(new Set([base, upper, lower]));
+ const hasExt=/\.(png|jpe?g|webp|gif)$/i.test(base);
+ let names=[];
+ if(hasExt){
+   const noExt=base.replace(/\.(png|jpe?g|webp|gif)$/i, "");
+   const ext=base.match(/\.(png|jpe?g|webp|gif)$/i)[0];
+   names=[base, noExt.toUpperCase()+ext.toLowerCase(), noExt.toLowerCase()+ext.toLowerCase()];
+ }else{
+   const exts=[".png",".jpg",".jpeg",".webp",".gif"];
+   for(const n of plain){ for(const e of exts){ names.push(n+e); } }
+ }
+ names=Array.from(new Set(names));
+ return names.map(n => "images/" + n);
 }
-
-function showSearch(user){
-  loggedInUsername = user.username || "guest";
-  document.body.classList.add("logged-in");
-  document.getElementById("loginSection").classList.add("hidden");
-  document.getElementById("searchSection").classList.remove("hidden");
-  document.getElementById("welcome").textContent =
-    "Welcome, " + (user.name || user.username) + (user.company ? " - " + user.company : "");
-  loadExcel();
-  loadOrder();
-  renderOrder();
+function autoImageHtml(code, captionText){
+ const tries=imageTryList(code);
+ if(!tries.length) return `<div class="img-note">No image name entered.</div>`;
+ const stamp=Date.now();
+ const first=esc(tries[0] + "?v=" + stamp);
+ const list=tries.map(x => esc(x + "?v=" + stamp)).join('|');
+ const caption=esc(captionText || ("Image lookup: " + code));
+ return `<div class="guide-image-box"><img src="${first}" data-tries="${list}" data-pos="0" onerror="var a=this.dataset.tries.split('|');var p=Number(this.dataset.pos||0)+1;if(p<a.length){this.dataset.pos=p;this.src=a[p];}else{this.parentElement.innerHTML='<div class=&quot;img-note&quot;>No uploaded image found. Upload picture in GitHub images folder with this serial name, example: ${esc(cleanImageName(code))}.png</div>';}" onload="this.style.display='block';"><div class="guide-caption">${caption}</div></div>`;
 }
-
-function logout(){
-  document.body.classList.remove("logged-in");
-  loggedInUsername = "guest";
-  location.reload();
+function guideFallbackHtml(code){
+ const g=findGuide(code);
+ if(!g) return "";
+ const file=imageFile(g);
+ if(!file) return "";
+ const img1=esc(file);
+ const img2=esc("images/"+file);
+ const caption=esc((g.Make_Category||"") + " • Code " + (g.Code||g.code||"") + " • PDF page " + (g.PDF_Page||""));
+ return `<div class="guide-image-box"><img src="${img1}" onerror="if(!this.dataset.retry){this.dataset.retry=1;this.src='${img2}'}else{this.parentElement.style.display='none';}"><div class="guide-caption">Guide image: ${caption}</div></div>`;
 }
-
-async function loadExcel(){
-  if(priceRows.length) return;
-  try{
-    const res = await fetch("Live_Market_Price.xlsx?cache=" + Date.now());
-    if(!res.ok) throw new Error("Excel file not found.");
-    const ab = await res.arrayBuffer();
-    const wb = XLSX.read(ab, {type:"array", cellDates:false});
-    const ws = wb.Sheets[wb.SheetNames[0]];
-    const rows = XLSX.utils.sheet_to_json(ws, {header:1, raw:false, defval:""});
-
-    priceRows = [];
-    for(let r = 21; r < rows.length; r++){
-      const row = rows[r] || [];
-      const code = String(row[0] ?? "").trim();   // Column A
-      const price = String(row[2] ?? "").trim();  // Column C
-      if(code && price && code.toLowerCase() !== "code"){
-        priceRows.push({code, price});
-      }
-    }
-    document.getElementById("status").textContent =
-      `Ready: ${priceRows.length.toLocaleString()} prices loaded.`;
-  }catch(e){
-    document.getElementById("status").textContent =
-      "Could not load Live_Market_Price.xlsx. Make sure file name is exact.";
-    document.getElementById("result").innerHTML = `<span class="small">${e.message}</span>`;
-  }
+function guideImageHtml(code){
+ // IMPORTANT: customer uploaded pictures in /images/ come first.
+ // The old guide PDF image list is only used by the separate View Image button if needed.
+ return autoImageHtml(code, "Uploaded image: " + code);
 }
-
-function searchCode(){
-  const raw = document.getElementById("searchInput").value.trim();
-  const q = norm(raw);
-  const result = document.getElementById("result");
-
-  currentResult = null;
-  document.getElementById("addOrderBtn").classList.add("hidden");
-  if(!q){ result.innerHTML = "Enter converter code."; return; }
-  if(!priceRows.length){ result.innerHTML = "Price list not loaded yet."; return; }
-
-  const exact = priceRows.find(x => norm(x.code) === q);
-  if(exact){
-    currentResult = {code: exact.code, price: cleanPrice(exact.price)};
-    document.getElementById("addOrderBtn").classList.remove("hidden");
-    result.innerHTML =
-      `<div class="exact-code">${esc(exact.code)}</div>
-       <div class="price">${cleanPrice(exact.price)}</div>
-       <div class="exact-actions"><button class="image-btn" onclick='showConverterImage(${JSON.stringify(exact.code)})'>View Image</button></div>
-       <p class="status">Current customer price</p>`;
-    return;
-  }
-
-  const sim = priceRows.filter(x => norm(x.code).includes(q)).slice(0,12);
-  if(sim.length){
-    window.nikoSimilar = sim.map(x => ({code:x.code, price:cleanPrice(x.price)}));
-    result.innerHTML =
-      `<div class="code">No exact match. Similar:</div>` +
-      window.nikoSimilar.map((x,i) =>
-        `<div class="similar-row">
-          <div class="similar-main"><span class="similar-code">${esc(x.code)}</span><span class="similar-price">${esc(x.price)}</span></div>
-          <div class="similar-buttons"><button class="image-btn" onclick="showSimilarImage(${i})">View Image</button><button class="similar-add" onclick="addSimilarToOrder(${i})">+ Add</button></div>
-        </div>`
-      ).join("");
-    return;
-  }
-
-  result.innerHTML = `No match for <b>${raw}</b><br><span class="small">Call Niko Auto Core USA for manual check.</span>`;
+function viewImageOnly(){
+ const raw=document.getElementById("imageSearchInput").value.trim() || document.getElementById("searchInput").value.trim();
+ const result=document.getElementById("result");
+ currentResult=null;
+ document.getElementById("addOrderBtn").classList.add("hidden");
+ if(!raw){result.innerHTML="Enter serial to view image.";return;}
+ result.innerHTML=`<div class="code">Image for: ${esc(raw)}</div>${autoImageHtml(raw, "Uploaded image: " + raw)}<span class="small">This checks GitHub images folder automatically: .png, .jpg, .jpeg, .webp, .gif. It also tries upper and lower case.</span>`;
 }
-
-
-
-function imageCandidates(code){
-  const raw = String(code || "").trim();
-  const normalized = norm(raw);
-  const compact = raw.replace(/\s+/g, "");
-  const safeRaw = encodeURIComponent(raw);
-  const safeCompact = encodeURIComponent(compact);
-  const safeNorm = encodeURIComponent(normalized);
-  const names = [...new Set([safeRaw, safeCompact, safeNorm])];
-  const folders = ["images/", "Images/", "image/", ""];
-  const exts = [".jpg", ".jpeg", ".png", ".webp", ".JPG", ".PNG"];
-  const list = [];
-  folders.forEach(folder => names.forEach(name => exts.forEach(ext => list.push(folder + name + ext))));
-  return list;
-}
-
-function showSimilarImage(i){
-  const item = (window.nikoSimilar || [])[i];
-  if(item) showConverterImage(item.code);
-}
-
-function showConverterImage(code){
-  const modal = document.getElementById("imageModal");
-  const img = document.getElementById("converterImage");
-  const msg = document.getElementById("imageMessage");
-  document.getElementById("imageTitle").textContent = String(code || "Converter Image");
-  modal.classList.remove("hidden");
-  img.classList.add("hidden");
-  img.removeAttribute("src");
-  msg.classList.remove("hidden");
-  msg.textContent = "Loading image...";
-  const candidates = imageCandidates(code);
-  let index = 0;
-  const tryNext = () => {
-    if(index >= candidates.length){
-      img.classList.add("hidden");
-      msg.classList.remove("hidden");
-      msg.textContent = "No image found for this serial.";
-      return;
-    }
-    img.onload = () => {
-      msg.classList.add("hidden");
-      img.classList.remove("hidden");
-    };
-    img.onerror = () => { index++; tryNext(); };
-    img.src = candidates[index] + "?cache=" + Date.now();
-  };
-  tryNext();
-}
-
-function closeImageModal(event){
-  if(event && event.target && event.target.id !== "imageModal") return;
-  const modal = document.getElementById("imageModal");
-  const img = document.getElementById("converterImage");
-  modal.classList.add("hidden");
-  img.removeAttribute("src");
-}
-
-function addSimilarToOrder(i){
-  const item = (window.nikoSimilar || [])[i];
-  if(!item) return;
-  addItemToOrder(item.code, item.price);
-}
-
-function priceNumber(v){
-  const n = Number(String(v||"0").replace(/[$, ]/g,""));
-  return Number.isFinite(n) ? n : 0;
-}
+function resultExactHtml(code, price){return `<div class="code">Code: ${esc(code)}</div><div class="price">${esc(cleanPrice(price))}</div><p class="status">Current customer price</p>${guideImageHtml(code)}`;}
+function searchCode(){const raw = document.getElementById("searchInput").value.trim(); const q = norm(raw); const result = document.getElementById("result"); currentResult = null; document.getElementById("addOrderBtn").classList.add("hidden"); if(!q){ result.innerHTML = "Enter converter code."; return; } if(!priceRows.length){ result.innerHTML = "Price list not loaded yet."; return; } const exact = priceRows.find(x => norm(x.code) === q); if(exact){currentResult = {code: exact.code, price: cleanPrice(exact.price)}; document.getElementById("addOrderBtn").classList.remove("hidden"); result.innerHTML = resultExactHtml(exact.code, exact.price); return;} const sim = priceRows.filter(x => norm(x.code).includes(q)).slice(0,8); if(sim.length){window.nikoSimilar = sim.map(x => ({code:x.code, price:cleanPrice(x.price)})); result.innerHTML = `<div class="code">No exact match. Similar:</div>` + window.nikoSimilar.map((x,i) => `<div class="similar-row"><span class="similar-code-price">${esc(x.code)}: <b>${esc(x.price)}</b></span><button class="similar-add similar-view" onclick="showSimilarAndAdd(${i}, false)">View</button><button class="similar-add similar-order" onclick="addSimilarToOrder(${i})">+ Add</button></div>`).join(""); return;} const guide=findGuide(raw); if(guide){result.innerHTML = `<div class="code">No price match. Guide image for: ${esc(guide.Code||raw)}</div>${guideImageHtml(guide.Code||raw)}<span class="small">Call Niko Auto Core USA for manual price check.</span>`; return;} result.innerHTML = `No match for <b>${esc(raw)}</b><br><span class="small">Call Niko Auto Core USA for manual check.</span>`;}
+function showSimilarAndAdd(i, add){const item=(window.nikoSimilar||[])[i]; if(!item) return; currentResult={code:item.code,price:item.price}; document.getElementById("addOrderBtn").classList.remove("hidden"); document.getElementById("result").innerHTML=resultExactHtml(item.code,item.price); if(add) addItemToOrder(item.code,item.price);}
+function addSimilarToOrder(i){const item = (window.nikoSimilar || [])[i]; if(!item) return; addItemToOrder(item.code, item.price);}
+function priceNumber(v){const n = Number(String(v||"0").replace(/[$, ]/g,"")); return Number.isFinite(n) ? n : 0;}
 function money(n){return "$" + Math.round(Number(n)||0).toLocaleString();}
-function orderKey(){
-  return "niko_order_" + (loggedInUsername || "guest");
-}
-function loadOrder(){
-  try{ orderItems = JSON.parse(localStorage.getItem(orderKey()) || "[]"); }
-  catch(e){ orderItems = []; }
-}
+function orderKey(){return "niko_order_" + (loggedInUsername || "guest");}
+function loadOrder(){try{ orderItems = JSON.parse(localStorage.getItem(orderKey()) || "[]"); } catch(e){ orderItems = []; }}
 function saveOrder(){ localStorage.setItem(orderKey(), JSON.stringify(orderItems)); }
-function addItemToOrder(code, price){
-  code = String(code || "").trim().toUpperCase();
-  price = cleanPrice(price);
-  if(!code || priceNumber(price) <= 0){ alert("Enter code and price first."); return; }
-  const found = orderItems.find(x => norm(x.code) === norm(code));
-  if(found){ found.qty = Number(found.qty || 1) + 1; found.price = price; }
-  else{ orderItems.push({code, price, qty: 1}); }
-  saveOrder();
-  renderOrder();
-}
-function addCurrentToOrder(){
-  if(!currentResult) return;
-  addItemToOrder(currentResult.code, currentResult.price);
-}
-function addManualToOrder(){
-  const codeEl = document.getElementById("manualCodeInput");
-  const priceEl = document.getElementById("manualPriceInput");
-  addItemToOrder(codeEl.value, priceEl.value);
-  codeEl.value = "";
-  priceEl.value = "";
-  codeEl.focus();
-}
-function updateQty(i, value){
-  const q = Math.max(1, Math.round(Number(value)||1));
-  if(orderItems[i]) orderItems[i].qty = q;
-  saveOrder(); renderOrder();
-}
-function removeOrderItem(i){
-  orderItems.splice(i,1);
-  saveOrder(); renderOrder();
-}
-function clearOrder(){
-  if(!orderItems.length) return;
-  if(confirm("Clear full order?")){
-    orderItems = [];
-    saveOrder(); renderOrder();
-  }
-}
-function renderOrder(){
-  const list = document.getElementById("orderList");
-  const count = document.getElementById("orderCount");
-  const totalEl = document.getElementById("orderTotal");
-  if(!list || !count || !totalEl) return;
-  const pieces = orderItems.reduce((a,x)=>a+(Number(x.qty)||1),0);
-  count.textContent = pieces + (pieces===1 ? " item" : " items");
-  if(!orderItems.length){
-    list.innerHTML = "No items added yet.";
-    totalEl.textContent = "Total: $0";
-    return;
-  }
-  let total = 0;
-  list.innerHTML = `<table class="order-table"><thead><tr><th>Code</th><th>Price</th><th>Qty</th><th>Line Total</th><th></th></tr></thead><tbody>` +
-    orderItems.map((x,i)=>{
-      const unit = priceNumber(x.price);
-      const qty = Number(x.qty)||1;
-      const line = unit * qty;
-      total += line;
-      return `<tr><td><b>${x.code}</b></td><td>${money(unit)}</td><td><input class="qtybox" type="number" min="1" value="${qty}" onchange="updateQty(${i}, this.value)"></td><td><b>${money(line)}</b></td><td><button class="remove-btn" onclick="removeOrderItem(${i})">Remove</button></td></tr>`;
-    }).join("") + `</tbody></table>`;
-  totalEl.textContent = "Total: " + money(total);
-}
-function orderText(){
-  let total = 0;
-  let lines = ["Niko Auto Core USA Order", "Phone: (469) 422-2777", "", "Code | Price | Qty | Line Total"];
-  orderItems.forEach(x=>{
-    const unit = priceNumber(x.price), qty = Number(x.qty)||1, line = unit*qty;
-    total += line;
-    lines.push(`${x.code} | ${money(unit)} | ${qty} | ${money(line)}`);
-  });
-  lines.push("", "Total: " + money(total), "Prices are not hedged. Confirm before sale.");
-  return lines.join("\n");
-}
-function printOrder(){
-  if(!orderItems.length){ alert("No order items yet."); return; }
-  window.print();
-}
-async function copyOrderText(){
-  if(!orderItems.length){ alert("No order items yet."); return; }
-  const text = orderText();
-  try{ await navigator.clipboard.writeText(text); alert("Order copied."); }
-  catch(e){ prompt("Copy order:", text); }
-}
-
+function addItemToOrder(code, price){code = String(code || "").trim().toUpperCase(); price = cleanPrice(price); if(!code || priceNumber(price) <= 0){ alert("Enter code and price first."); return; } const found = orderItems.find(x => norm(x.code) === norm(code)); if(found){ found.qty = Number(found.qty || 1) + 1; found.price = price; } else{ orderItems.push({code, price, qty: 1}); } saveOrder(); renderOrder();}
+function addCurrentToOrder(){if(!currentResult) return; addItemToOrder(currentResult.code, currentResult.price);}
+function addManualToOrder(){const codeEl = document.getElementById("manualCodeInput"); const priceEl = document.getElementById("manualPriceInput"); addItemToOrder(codeEl.value, priceEl.value); codeEl.value = ""; priceEl.value = ""; codeEl.focus();}
+function updateQty(i, value){const q = Math.max(1, Math.round(Number(value)||1)); if(orderItems[i]) orderItems[i].qty = q; saveOrder(); renderOrder();}
+function removeOrderItem(i){orderItems.splice(i,1); saveOrder(); renderOrder();}
+function clearOrder(){if(!orderItems.length) return; if(confirm("Clear full order?")){orderItems = []; saveOrder(); renderOrder();}}
+function renderOrder(){const list = document.getElementById("orderList"); const count = document.getElementById("orderCount"); const totalEl = document.getElementById("orderTotal"); if(!list || !count || !totalEl) return; const pieces = orderItems.reduce((a,x)=>a+(Number(x.qty)||1),0); count.textContent = pieces + (pieces===1 ? " item" : " items"); if(!orderItems.length){list.innerHTML = "No items added yet."; totalEl.textContent = "Total: $0"; return;} let total = 0; list.innerHTML = `<table class="order-table"><thead><tr><th>Code</th><th>Price</th><th>Qty</th><th>Line Total</th><th></th></tr></thead><tbody>` + orderItems.map((x,i)=>{const unit = priceNumber(x.price); const qty = Number(x.qty)||1; const line = unit * qty; total += line; return `<tr><td><b>${esc(x.code)}</b></td><td>${money(unit)}</td><td><input class="qtybox" type="number" min="1" value="${qty}" onchange="updateQty(${i}, this.value)"></td><td><b>${money(line)}</b></td><td><button class="remove-btn" onclick="removeOrderItem(${i})">Remove</button></td></tr>`;}).join("") + `</tbody></table>`; totalEl.textContent = "Total: " + money(total);}
+function orderText(){let total = 0; let lines = ["Niko Auto Core USA Order", "Phone: (469) 422-2777", "", "Code | Price | Qty | Line Total"]; orderItems.forEach(x=>{const unit = priceNumber(x.price), qty = Number(x.qty)||1, line = unit*qty; total += line; lines.push(`${x.code} | ${money(unit)} | ${qty} | ${money(line)}`);}); lines.push("", "Total: " + money(total), "Prices are not hedged. Confirm before sale."); return lines.join("\n");}
+function printOrder(){if(!orderItems.length){ alert("No order items yet."); return; } window.print();}
+async function copyOrderText(){if(!orderItems.length){ alert("No order items yet."); return; } const text = orderText(); try{ await navigator.clipboard.writeText(text); alert("Order copied."); } catch(e){ prompt("Copy order:", text); }}
 document.getElementById("passwordInput").addEventListener("keydown", e => { if(e.key === "Enter") login(); });
 document.getElementById("usernameInput").addEventListener("keydown", e => { if(e.key === "Enter") login(); });
 document.getElementById("searchInput").addEventListener("keydown", e => { if(e.key === "Enter") searchCode(); });
 document.getElementById("manualCodeInput").addEventListener("keydown", e => { if(e.key === "Enter") addManualToOrder(); });
 document.getElementById("manualPriceInput").addEventListener("keydown", e => { if(e.key === "Enter") addManualToOrder(); });
-
-// Login is not saved in browser in this version. Every new browser open requires login.
+document.getElementById("imageSearchInput").addEventListener("keydown", e => { if(e.key === "Enter") viewImageOnly(); });
 </script>
 </body>
 </html>
