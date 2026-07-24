@@ -33,6 +33,7 @@ footer{text-align:center;margin-top:30px}.phone-link{color:var(--gold);font-weig
   <input id="usernameInput" placeholder="Username" autocomplete="username" />
   <input id="passwordInput" type="password" placeholder="Password" autocomplete="current-password" />
   <button class="login-btn" onclick="login()">Login</button>
+  <button class="trial-btn" onclick="enterFreeTrial()">PRESS HERE TO ENTER 14-DAY FREE TRIAL</button>
   <p id="loginMessage" class="status"></p>
   <div class="login-help">Need help to login? Call or text Niko Auto Core USA<br><a href="tel:+14694222777">Phone: (469) 422-2777</a></div>
   <div class="login-note">New customers receive a 14-day free trial. After the trial expires, call Niko Auto Core USA to activate access. Prices are not hedged. Confirm before sale.</div>
@@ -76,6 +77,16 @@ function norm(v){return String(v||"").toUpperCase().replace(/[\s\-_./]/g,"");}
 function cleanPrice(v){let s = String(v ?? "").trim(); if(!s) return ""; let n = Number(s.replace(/[$, ]/g,"")); if(Number.isFinite(n)) return "$" + Math.round(n).toLocaleString(); return s;}
 function esc(v){return String(v ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));}
 async function loadUsers(){const res = await fetch("users.json?cache=" + Date.now()); if(!res.ok) throw new Error("users.json not found"); users = await res.json();}
+function enterFreeTrial(){
+ const msg = document.getElementById("loginMessage");
+ const trialUser = {username:"free_trial", name:"Free Trial Customer", role:"customer"};
+ const trial = getTrialStatus(trialUser);
+ if(!trial.allowed){
+  msg.innerHTML = '<span class="error">Your 14-day free trial has expired. Call or text Niko Auto Core USA at (469) 422-2777 to activate access.</span>';
+  return;
+ }
+ showSearch(trialUser, trial);
+}
 async function login(){const msg = document.getElementById("loginMessage"); try{if(!users.length) await loadUsers();}catch(e){msg.innerHTML = '<span class="error">Cannot load users.json.</span>'; return;} const username = document.getElementById("usernameInput").value.trim().toLowerCase(); const password = document.getElementById("passwordInput").value; const user = users.find(u => String(u.username).toLowerCase() === username && String(u.password) === password); if(!user){msg.innerHTML = '<span class="error">Wrong username or password.</span>'; return;} if(user.active === false){msg.innerHTML = '<span class="error">This account is locked. Call Niko Auto Core USA.</span>'; return;} const trial=getTrialStatus(user); if(!trial.allowed){msg.innerHTML = '<span class="error">Your 14-day free trial has expired. Call or text Niko Auto Core USA at (469) 422-2777 to activate access.</span>'; return;} showSearch(user, trial);}
 function showSearch(user, trial){loggedInUsername = user.username || "guest"; document.body.classList.add("logged-in"); document.getElementById("loginSection").classList.add("hidden"); document.getElementById("searchSection").classList.remove("hidden"); let welcome = "Welcome, " + (user.name || user.username) + (user.company ? " - " + user.company : ""); if(trial && !trial.full) welcome += " • Free trial: " + trial.daysLeft + (trial.daysLeft===1 ? " day" : " days") + " remaining"; document.getElementById("welcome").textContent = welcome; loadExcel(); loadGuideImages(); loadOrder(); renderOrder();}
 function logout(){document.body.classList.remove("logged-in"); loggedInUsername = "guest"; location.reload();}
