@@ -166,7 +166,16 @@ async function login(){
   }
 
   // Do not save login in browser. User must login again after closing/reopening.
+  window.pendingLoginUser = user;
+
+if (window.AndroidBilling &&
+    typeof window.AndroidBilling.requestLifetimeAccess === "function") {
+
+  window.AndroidBilling.requestLifetimeAccess();
+
+} else {
   showSearch(user);
+}
 }
 
 function showSearch(user){
@@ -179,7 +188,25 @@ function showSearch(user){
   loadExcel();
   loadOrder();
   renderOrder();
-}
+}window.onLifetimeAccessGranted = function() {
+  if (window.pendingLoginUser) {
+    const user = window.pendingLoginUser;
+    window.pendingLoginUser = null;
+    showSearch(user);
+  }
+};
+
+window.onLifetimePurchaseCancelled = function() {
+  alert("Purchase cancelled.");
+};
+
+window.onLifetimePurchasePending = function() {
+  alert("Payment is pending. Access will open after Google Play confirms it.");
+};
+
+window.onLifetimeAccessError = function() {
+  alert("Could not verify lifetime access. Please try again.");
+};
 
 function logout(){
   document.body.classList.remove("logged-in");
