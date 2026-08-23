@@ -228,7 +228,7 @@ async function loadExcel(){
     for(let r = 21; r < rows.length; r++){
       const row = rows[r] || [];
       const code = String(row[0] ?? "").trim();   // Column A
-      const price = String(row[2] ?? "").trim();  // Column B
+      const price = String(row[1] ?? "").trim();  // Column B
       if(code && price && code.toLowerCase() !== "code"){
         priceRows.push({code, price});
       }
@@ -241,7 +241,11 @@ async function loadExcel(){
     document.getElementById("result").innerHTML = `<span class="small">${e.message}</span>`;
   }
 }
-
+setInterval(async () => {
+  if(document.body.classList.contains("logged-in")){
+    await loadExcel();
+  }
+}, 60000);
 function searchCode(){
   const raw = document.getElementById("searchInput").value.trim();
   const q = norm(raw);
