@@ -166,16 +166,7 @@ async function login(){
   }
 
   // Do not save login in browser. User must login again after closing/reopening.
-  window.pendingLoginUser = user;
-
-if (window.AndroidBilling &&
-    typeof window.AndroidBilling.requestLifetimeAccess === "function") {
-
-  window.AndroidBilling.requestLifetimeAccess();
-
-} else {
   showSearch(user);
-}
 }
 
 function showSearch(user){
@@ -188,25 +179,7 @@ function showSearch(user){
   loadExcel();
   loadOrder();
   renderOrder();
-}window.onLifetimeAccessGranted = function() {
-  if (window.pendingLoginUser) {
-    const user = window.pendingLoginUser;
-    window.pendingLoginUser = null;
-    showSearch(user);
-  }
-};
-
-window.onLifetimePurchaseCancelled = function() {
-  alert("Purchase cancelled.");
-};
-
-window.onLifetimePurchasePending = function() {
-  alert("Payment is pending. Access will open after Google Play confirms it.");
-};
-
-window.onLifetimeAccessError = function() {
-  alert("Could not verify lifetime access. Please try again.");
-};
+}
 
 function logout(){
   document.body.classList.remove("logged-in");
@@ -214,8 +187,8 @@ function logout(){
   location.reload();
 }
 
-async function loadExcel(){
-  if(priceRows.length) return;
+async function loadExcel(force = false){
+  if(priceRows.length && !force) return;
   try{
     const res = await fetch("Live_Market_Price.xlsx?cache=" + Date.now());
     if(!res.ok) throw new Error("Excel file not found.");
@@ -228,7 +201,7 @@ async function loadExcel(){
     for(let r = 21; r < rows.length; r++){
       const row = rows[r] || [];
       const code = String(row[0] ?? "").trim();   // Column A
-      const price = String(row[1] ?? "").trim();  // Column B
+      const price = String(row[2] ?? "").trim();  // Column C
       if(code && price && code.toLowerCase() !== "code"){
         priceRows.push({code, price});
       }
@@ -241,11 +214,7 @@ async function loadExcel(){
     document.getElementById("result").innerHTML = `<span class="small">${e.message}</span>`;
   }
 }
-setInterval(async () => {
-  if(document.body.classList.contains("logged-in")){
-    await loadExcel();
-  }
-}, 60000);
+
 function searchCode(){
   const raw = document.getElementById("searchInput").value.trim();
   const q = norm(raw);
@@ -451,6 +420,13 @@ document.getElementById("usernameInput").addEventListener("keydown", e => { if(e
 document.getElementById("searchInput").addEventListener("keydown", e => { if(e.key === "Enter") searchCode(); });
 document.getElementById("manualCodeInput").addEventListener("keydown", e => { if(e.key === "Enter") addManualToOrder(); });
 document.getElementById("manualPriceInput").addEventListener("keydown", e => { if(e.key === "Enter") addManualToOrder(); });
+
+// Refresh live prices every 60 seconds while customer is logged in.
+setInterval(async () => {
+  if(document.body.classList.contains("logged-in")){
+    await loadExcel(true);
+  }
+}, 60000);
 
 // Login is not saved in browser in this version. Every new browser open requires login.
 </script>
