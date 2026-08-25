@@ -3,7 +3,7 @@
     "name": "Customer 01",
     "company": "Company 01",
     "username": "customer01",
-    "password": "Niko1001",
+    "password": "Nikobos1",
     "active": true,
     "notes": "",
     "priceDiscountPercent": 0
@@ -12,7 +12,7 @@
     "name": "Customer 02",
     "company": "Company 02",
     "username": "customer02",
-    "password": "Niko1002",
+    "password": "Nikobos2",
     "active": true,
     "notes": "",
     "priceDiscountPercent": 5
@@ -21,7 +21,7 @@
     "name": "Customer 03",
     "company": "Company 03",
     "username": "customer03",
-    "password": "Niko1003",
+    "password": "Nikobos02",
     "active": true,
     "notes": "",
     "priceDiscountPercent": 10
@@ -30,7 +30,7 @@
     "name": "Customer 04",
     "company": "Company 04",
     "username": "customer04",
-    "password": "Niko1004",
+    "password": "Nikobos04",
     "active": true,
     "notes": "",
     "priceDiscountPercent": 15
