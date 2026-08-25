@@ -3,9 +3,10 @@
     "name": "Customer 01",
     "company": "Company 01",
     "username": "customer01",
-    "password": "Nikobos1",
+    "password": "Niko1001",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 0
   },
   {
     "name": "Customer 02",
@@ -13,7 +14,8 @@
     "username": "customer02",
     "password": "Niko1002",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 5
   },
   {
     "name": "Customer 03",
@@ -21,7 +23,8 @@
     "username": "customer03",
     "password": "Niko1003",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 10
   },
   {
     "name": "Customer 04",
@@ -29,7 +32,8 @@
     "username": "customer04",
     "password": "Niko1004",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 15
   },
   {
     "name": "Customer 05",
@@ -37,7 +41,8 @@
     "username": "customer05",
     "password": "Niko1005",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 20
   },
   {
     "name": "Customer 06",
@@ -45,7 +50,8 @@
     "username": "customer06",
     "password": "Niko1006",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 25
   },
   {
     "name": "Customer 07",
@@ -53,7 +59,8 @@
     "username": "customer07",
     "password": "Niko1007",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 0
   },
   {
     "name": "Customer 08",
@@ -61,7 +68,8 @@
     "username": "customer08",
     "password": "Niko1008",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 5
   },
   {
     "name": "Customer 09",
@@ -69,7 +77,8 @@
     "username": "customer09",
     "password": "Niko1009",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 10
   },
   {
     "name": "Customer 10",
@@ -77,7 +86,8 @@
     "username": "customer10",
     "password": "Niko1010",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 15
   },
   {
     "name": "Customer 11",
@@ -85,7 +95,8 @@
     "username": "customer11",
     "password": "Niko1011",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 20
   },
   {
     "name": "Customer 12",
@@ -93,7 +104,8 @@
     "username": "customer12",
     "password": "Niko1012",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 25
   },
   {
     "name": "Customer 13",
@@ -101,7 +113,8 @@
     "username": "customer13",
     "password": "Niko1013",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 0
   },
   {
     "name": "Customer 14",
@@ -109,7 +122,8 @@
     "username": "customer14",
     "password": "Niko1014",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 5
   },
   {
     "name": "Customer 15",
@@ -117,7 +131,8 @@
     "username": "customer15",
     "password": "Niko1015",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 10
   },
   {
     "name": "Customer 16",
@@ -125,7 +140,8 @@
     "username": "customer16",
     "password": "Niko1016",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 15
   },
   {
     "name": "Customer 17",
@@ -133,7 +149,8 @@
     "username": "customer17",
     "password": "Niko1017",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 20
   },
   {
     "name": "Customer 18",
@@ -141,7 +158,8 @@
     "username": "customer18",
     "password": "Niko1018",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 25
   },
   {
     "name": "Customer 19",
@@ -149,7 +167,8 @@
     "username": "customer19",
     "password": "Niko1019",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 0
   },
   {
     "name": "Customer 20",
@@ -157,7 +176,8 @@
     "username": "customer20",
     "password": "Niko1020",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 5
   },
   {
     "name": "Customer 21",
@@ -165,7 +185,8 @@
     "username": "customer21",
     "password": "Niko1021",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 10
   },
   {
     "name": "Customer 22",
@@ -173,7 +194,8 @@
     "username": "customer22",
     "password": "Niko1022",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 15
   },
   {
     "name": "Customer 23",
@@ -181,7 +203,8 @@
     "username": "customer23",
     "password": "Niko1023",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 20
   },
   {
     "name": "Customer 24",
@@ -189,7 +212,8 @@
     "username": "customer24",
     "password": "Niko1024",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 25
   },
   {
     "name": "Customer 25",
@@ -197,7 +221,8 @@
     "username": "customer25",
     "password": "Niko1025",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 0
   },
   {
     "name": "Customer 26",
@@ -205,7 +230,8 @@
     "username": "customer26",
     "password": "Niko1026",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 5
   },
   {
     "name": "Customer 27",
@@ -213,7 +239,8 @@
     "username": "customer27",
     "password": "Niko1027",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 10
   },
   {
     "name": "Customer 28",
@@ -221,7 +248,8 @@
     "username": "customer28",
     "password": "Niko1028",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 15
   },
   {
     "name": "Customer 29",
@@ -229,7 +257,8 @@
     "username": "customer29",
     "password": "Niko1029",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 20
   },
   {
     "name": "Customer 30",
@@ -237,7 +266,8 @@
     "username": "customer30",
     "password": "Niko1030",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 25
   },
   {
     "name": "Customer 31",
@@ -245,7 +275,8 @@
     "username": "customer31",
     "password": "Niko1031",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 0
   },
   {
     "name": "Customer 32",
@@ -253,7 +284,8 @@
     "username": "customer32",
     "password": "Niko1032",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 5
   },
   {
     "name": "Customer 33",
@@ -261,7 +293,8 @@
     "username": "customer33",
     "password": "Niko1033",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 10
   },
   {
     "name": "Customer 34",
@@ -269,7 +302,8 @@
     "username": "customer34",
     "password": "Niko1034",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 15
   },
   {
     "name": "Customer 35",
@@ -277,7 +311,8 @@
     "username": "customer35",
     "password": "Niko1035",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 20
   },
   {
     "name": "Customer 36",
@@ -285,7 +320,8 @@
     "username": "customer36",
     "password": "Niko1036",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 25
   },
   {
     "name": "Customer 37",
@@ -293,7 +329,8 @@
     "username": "customer37",
     "password": "Niko1037",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 0
   },
   {
     "name": "Customer 38",
@@ -301,7 +338,8 @@
     "username": "customer38",
     "password": "Niko1038",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 5
   },
   {
     "name": "Customer 39",
@@ -309,7 +347,8 @@
     "username": "customer39",
     "password": "Niko1039",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 10
   },
   {
     "name": "Customer 40",
@@ -317,7 +356,8 @@
     "username": "customer40",
     "password": "Niko1040",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 15
   },
   {
     "name": "Customer 41",
@@ -325,7 +365,8 @@
     "username": "customer41",
     "password": "Niko1041",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 20
   },
   {
     "name": "Customer 42",
@@ -333,7 +374,8 @@
     "username": "customer42",
     "password": "Niko1042",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 25
   },
   {
     "name": "Customer 43",
@@ -341,7 +383,8 @@
     "username": "customer43",
     "password": "Niko1043",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 0
   },
   {
     "name": "Customer 44",
@@ -349,7 +392,8 @@
     "username": "customer44",
     "password": "Niko1044",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 5
   },
   {
     "name": "Customer 45",
@@ -357,7 +401,8 @@
     "username": "customer45",
     "password": "Niko1045",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 10
   },
   {
     "name": "Customer 46",
@@ -365,7 +410,8 @@
     "username": "customer46",
     "password": "Niko1046",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 15
   },
   {
     "name": "Customer 47",
@@ -373,7 +419,8 @@
     "username": "customer47",
     "password": "Niko1047",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 20
   },
   {
     "name": "Customer 48",
@@ -381,7 +428,8 @@
     "username": "customer48",
     "password": "Niko1048",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 25
   },
   {
     "name": "Customer 49",
@@ -389,7 +437,8 @@
     "username": "customer49",
     "password": "Niko1049",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 0
   },
   {
     "name": "Customer 50",
@@ -397,6 +446,7 @@
     "username": "customer50",
     "password": "Niko1050",
     "active": true,
-    "notes": ""
+    "notes": "",
+    "priceDiscountPercent": 5
   }
 ]
