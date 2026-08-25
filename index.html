@@ -106,7 +106,7 @@ footer{text-align:center;margin-top:30px}.phone-link{color:var(--gold);font-weig
       <div id="imageTitle" class="image-title">Converter Image</div>
       <div id="imageMessage" class="image-message">Loading image...</div>
       <img id="converterImage" class="hidden" alt="Catalytic converter image" />
-      <br><button class="close-image" onclick="closeImageModal()">Close Image</button>
+      <br><button class="close-image" onclick="closeImageModal()">Close Image</buttonB
     </div>
   </div>
 
@@ -201,7 +201,7 @@ async function loadExcel(force = false){
     for(let r = 21; r < rows.length; r++){
       const row = rows[r] || [];
       const code = String(row[0] ?? "").trim();   // Column A
-      const price = String(row[2] ?? "").trim();  // Column C
+      const price = String(row[1] ?? "").trim();  // Column B
       if(code && price && code.toLowerCase() !== "code"){
         priceRows.push({code, price});
       }
