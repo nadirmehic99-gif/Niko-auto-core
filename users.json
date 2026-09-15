@@ -36,7 +36,6 @@
     "priceDiscountPercent": 25
   },
   {
-    {
   "name": "Customer 05",
   "company": "Company 05",
   "username": "customer05",
@@ -45,7 +44,6 @@
   "priceDiscountPercent": 25,
   "managerAccess": true
 },
-  },
   {
     "name": "Customer 06",
     "company": "Company 06",
