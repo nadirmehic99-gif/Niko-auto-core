@@ -129,7 +129,7 @@ footer{text-align:center;margin-top:30px}.phone-link{color:var(--gold);font-weig
     <div id="managerPurchases" class="manager-page">
       <div id="bmPurchaseFormCard" class="manager-section manager-form-card"><h2>Add Converter Purchase</h2><form id="bmPurchaseForm" class="manager-form">
         <div class="manager-field"><label>Date</label><input id="bmPDate" type="date" required></div><div class="manager-field"><label>Customer</label><select id="bmPCustomer" required></select></div>
-        <div class="manager-field"><label>Converter Serial</label><input id="bmPSerial" required></div><div class="manager-field"><label>Quantity</label><input id="bmPQty" type="number" min="1" value="1" required></div>
+        <div class="manager-field"><label>Converter Serial — type to search live prices</label><input id="bmPSerial" list="bmSerialSuggestions" autocomplete="off" required><datalist id="bmSerialSuggestions"></datalist></div><div class="manager-field"><label>Quantity</label><input id="bmPQty" type="number" min="1" value="1" required></div>
         <div class="manager-field"><label>Total Paid ($)</label><input id="bmPCost" type="number" min="0" step=".01" required></div><div class="manager-field"><label>Estimated Value ($)</label><input id="bmPValue" type="number" min="0" step=".01" required></div>
         <div class="manager-field"><label>Weight (grams)</label><input id="bmPWeight" type="number" min="0"></div><div class="manager-field"><label>Notes</label><input id="bmPNotes"></div>
         <div class="manager-form-actions"><button type="button" class="manager-cancel" onclick="hideManagerForms()">Cancel</button><button>Save Purchase</button></div>
@@ -139,10 +139,10 @@ footer{text-align:center;margin-top:30px}.phone-link{color:var(--gold);font-weig
 
     <div id="managerCustomers" class="manager-page">
       <div id="bmCustomerFormCard" class="manager-section manager-form-card"><h2>Add Customer</h2><form id="bmCustomerForm" class="manager-form">
-        <div class="manager-field"><label>Name</label><input id="bmCName" required></div><div class="manager-field"><label>Phone</label><input id="bmCPhone" type="tel"></div><div class="manager-field"><label>Company</label><input id="bmCCompany"></div><div class="manager-field"><label>Notes</label><input id="bmCNotes"></div>
+        <div class="manager-field"><label>Name</label><input id="bmCName" required></div><div class="manager-field"><label>Phone</label><input id="bmCPhone" type="tel"></div><div class="manager-field"><label>Company</label><input id="bmCCompany"></div><div class="manager-field"><label>Buying Discount (%)</label><input id="bmCDiscount" type="number" min="0" max="100" step=".1" value="0"></div><div class="manager-field"><label>Notes</label><input id="bmCNotes"></div>
         <div class="manager-form-actions"><button type="button" class="manager-cancel" onclick="hideManagerForms()">Cancel</button><button>Save Customer</button></div>
       </form></div>
-      <div class="manager-section"><div class="manager-section-head"><h2>Customers</h2><button class="manager-add" onclick="showManagerForm('customer')">+ Add Customer</button></div><div class="manager-table-wrap"><table class="manager-table"><thead><tr><th>Name</th><th>Phone</th><th>Company</th><th>Purchases</th><th>Total Paid</th><th></th></tr></thead><tbody id="bmCustomerRows"></tbody></table></div></div>
+      <div class="manager-section"><div class="manager-section-head"><h2>Customers</h2><button class="manager-add" onclick="showManagerForm('customer')">+ Add Customer</button></div><div class="manager-table-wrap"><table class="manager-table"><thead><tr><th>Name</th><th>Phone</th><th>Company</th><th>Discount</th><th>Purchases</th><th>Total Paid</th><th></th></tr></thead><tbody id="bmCustomerRows"></tbody></table></div></div>
     </div>
 
     <div id="managerShipments" class="manager-page">
@@ -591,6 +591,36 @@ function bmMoney(n){
 function bmToday(){ return new Date().toISOString().slice(0,10); }
 function bmCustomerName(id){ return bmData.customers.find(c => c.id === id)?.name || "Unknown"; }
 
+function updateManagerSerialSearch(){
+  const serialEl = document.getElementById("bmPSerial");
+  const listEl = document.getElementById("bmSerialSuggestions");
+  const q = norm(serialEl.value);
+  if(!q){ listEl.innerHTML = ""; return; }
+  const matches = [];
+  for(const item of priceRows){
+    if(item.normCode.includes(q)){
+      matches.push(item);
+      if(matches.length >= 20) break;
+    }
+  }
+  listEl.innerHTML = matches.map(x => `<option value="${esc(x.code)}">${esc(cleanPrice(x.price))}</option>`).join("");
+  calculateManagerPurchase();
+}
+
+function calculateManagerPurchase(){
+  const serial = document.getElementById("bmPSerial").value;
+  const item = exactPriceMap.get(norm(serial));
+  if(!item) return;
+  const qty = Math.max(1, Number(document.getElementById("bmPQty").value) || 1);
+  const liveUnitPrice = priceNumber(item.price);
+  const estimated = Math.round(liveUnitPrice * qty);
+  const customerId = Number(document.getElementById("bmPCustomer").value);
+  const customer = bmData.customers.find(c => c.id === customerId);
+  const discount = Math.max(0, Math.min(100, Number(customer?.discount || 0)));
+  document.getElementById("bmPValue").value = estimated;
+  document.getElementById("bmPCost").value = Math.round(estimated * (1 - discount / 100));
+}
+
 function openBusinessManager(){
   const canManage = activeAppUser && (activeAppUser.managerAccess === true || String(activeAppUser.role || "").toLowerCase() === "admin");
   if(!canManage){ alert("Manager access is not enabled for this account."); return; }
@@ -654,8 +684,8 @@ function renderBusinessManager(){
   document.getElementById("bmCustomerRows").innerHTML = bmData.customers.length ? bmData.customers.map(c => {
     const purchases = bmData.purchases.filter(p => p.customerId === c.id);
     const paid = purchases.reduce((s,p) => s + Number(p.cost || 0), 0);
-    return `<tr><td><b>${esc(c.name)}</b></td><td>${esc(c.phone || "-")}</td><td>${esc(c.company || "-")}</td><td>${purchases.length}</td><td>${bmMoney(paid)}</td><td><button class="manager-delete" onclick="deleteBusinessCustomer(${c.id})">Delete</button></td></tr>`;
-  }).join("") : '<tr><td class="manager-empty" colspan="6">No customers yet</td></tr>';
+    return `<tr><td><b>${esc(c.name)}</b></td><td>${esc(c.phone || "-")}</td><td>${esc(c.company || "-")}</td><td><input class="qtybox" type="number" min="0" max="100" step=".1" value="${Number(c.discount || 0)}" onchange="updateBusinessCustomerDiscount(${c.id},this.value)">%</td><td>${purchases.length}</td><td>${bmMoney(paid)}</td><td><button class="manager-delete" onclick="deleteBusinessCustomer(${c.id})">Delete</button></td></tr>`;
+  }).join("") : '<tr><td class="manager-empty" colspan="7">No customers yet</td></tr>';
   document.getElementById("bmShipmentRows").innerHTML = bmData.shipments.length ? bmData.shipments.map(s => `<tr><td>${esc(s.date)}</td><td><b>${esc(s.name)}</b></td><td>${esc(s.refinery)}</td><td>${Number(s.weight || 0).toLocaleString()} lb</td><td>${bmMoney(s.expected)}</td><td>${bmMoney(s.received)}</td><td>${esc(s.status)}</td><td><button class="manager-delete" onclick="deleteBusinessItem('shipments',${s.id})">Delete</button></td></tr>`).join("") : '<tr><td class="manager-empty" colspan="8">No shipments yet</td></tr>';
 }
 
@@ -671,6 +701,13 @@ function deleteBusinessCustomer(id){
   deleteBusinessItem("customers", id);
 }
 
+function updateBusinessCustomerDiscount(id,value){
+  const customer = bmData.customers.find(c => c.id === id);
+  if(!customer) return;
+  customer.discount = Math.max(0, Math.min(100, Number(value) || 0));
+  saveBusinessData();
+}
+
 document.getElementById("bmPurchaseForm").addEventListener("submit", e => {
   e.preventDefault();
   if(!bmData.customers.length){ alert("Add a customer first."); managerGoTo("managerCustomers"); showManagerForm("customer"); return; }
@@ -680,7 +717,7 @@ document.getElementById("bmPurchaseForm").addEventListener("submit", e => {
 
 document.getElementById("bmCustomerForm").addEventListener("submit", e => {
   e.preventDefault();
-  bmData.customers.push({id:Date.now(), name:document.getElementById("bmCName").value.trim(), phone:document.getElementById("bmCPhone").value.trim(), company:document.getElementById("bmCCompany").value.trim(), notes:document.getElementById("bmCNotes").value.trim()});
+  bmData.customers.push({id:Date.now(), name:document.getElementById("bmCName").value.trim(), phone:document.getElementById("bmCPhone").value.trim(), company:document.getElementById("bmCCompany").value.trim(), discount:Number(document.getElementById("bmCDiscount").value || 0), notes:document.getElementById("bmCNotes").value.trim()});
   e.target.reset(); hideManagerForms(); saveBusinessData();
 });
 
@@ -689,6 +726,11 @@ document.getElementById("bmShipmentForm").addEventListener("submit", e => {
   bmData.shipments.unshift({id:Date.now(), date:document.getElementById("bmSDate").value, name:document.getElementById("bmSName").value.trim(), refinery:document.getElementById("bmSRefinery").value.trim(), weight:Number(document.getElementById("bmSWeight").value), expected:Number(document.getElementById("bmSExpected").value), received:Number(document.getElementById("bmSReceived").value), status:document.getElementById("bmSStatus").value});
   e.target.reset(); hideManagerForms(); saveBusinessData();
 });
+
+document.getElementById("bmPSerial").addEventListener("input", updateManagerSerialSearch);
+document.getElementById("bmPSerial").addEventListener("change", calculateManagerPurchase);
+document.getElementById("bmPQty").addEventListener("input", calculateManagerPurchase);
+document.getElementById("bmPCustomer").addEventListener("change", calculateManagerPurchase);
 
 renderBusinessManager();
 
