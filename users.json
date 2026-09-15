@@ -41,7 +41,7 @@
   "username": "customer05",
   "password": "Niko1005",
   "active": true,
-  "priceDiscountPercent": 25,
+  "priceDiscountPercent": 0,
   "managerAccess": true
 },
   {
