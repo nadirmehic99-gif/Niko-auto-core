@@ -36,13 +36,15 @@
     "priceDiscountPercent": 25
   },
   {
-    "name": "Customer 05",
-    "company": "Company 05",
-    "username": "customer05",
-    "password": "Niko1005",
-    "active": true,
-"priceDiscountPercent": 25
-"managerAccess": true
+    {
+  "name": "Customer 05",
+  "company": "Company 05",
+  "username": "customer05",
+  "password": "Niko1005",
+  "active": true,
+  "priceDiscountPercent": 25,
+  "managerAccess": true
+},
   },
   {
     "name": "Customer 06",
