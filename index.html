@@ -52,6 +52,16 @@ footer{text-align:center;margin-top:30px}.phone-link{color:var(--gold);font-weig
 .login-help a{color:var(--gold);font-weight:900;text-decoration:none;font-size:22px;display:inline-block;margin-top:5px}
 .login-note{text-align:center;color:var(--muted);font-size:15px;margin-top:13px}
 .login-btn{width:100%;margin-top:10px}
+.request-access-btn{width:100%;margin-top:10px;background:transparent;color:var(--gold);border:2px solid var(--gold)}
+.access-request{margin-top:14px;padding:16px;background:#080d16;border:1px solid #2a3444;border-radius:16px;text-align:left}
+.access-request h2{font-size:23px;color:var(--gold);margin:0 0 5px;text-align:center}
+.access-request .request-intro{font-size:16px;color:var(--muted);text-align:center;margin:0 0 13px;line-height:1.4}
+.access-request label{display:block;color:var(--muted);font-size:14px;font-weight:800;margin:10px 0 5px}
+.access-request input{margin:0;font-size:17px;padding:13px}
+.access-request .optional{font-weight:400;font-size:12px}
+.access-request .request-send{width:100%;margin-top:14px;background:var(--green);color:#061109}
+.access-request .request-cancel{width:100%;margin-top:8px;background:transparent;color:var(--muted);border:1px solid var(--border)}
+.request-privacy{text-align:center;color:var(--muted);font-size:13px;margin:10px 0 0;line-height:1.35}
 .manager-launch{display:none;width:100%;margin:0 0 18px;background:linear-gradient(135deg,#e0aa18,#f2c84b);color:#111;box-shadow:0 8px 22px rgba(224,170,24,.22)}
 .manager-screen{display:none;max-width:1120px;margin:auto}.manager-screen.active{display:block}.manager-screen .manager-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.manager-screen .manager-title{margin:0;font-size:clamp(25px,5vw,38px);text-align:left}.manager-screen .manager-back{width:auto;font-size:16px;padding:11px 15px;background:transparent;color:var(--gold);border:1px solid var(--gold);border-radius:12px}.manager-tabs{display:flex;gap:8px;overflow:auto;margin-bottom:14px;padding-bottom:4px}.manager-tab{white-space:nowrap;width:auto;background:#172437;color:var(--muted);border:1px solid var(--border);font-size:16px;padding:11px 14px;border-radius:11px}.manager-tab.active{background:var(--gold);color:#111}.manager-page{display:none}.manager-page.active{display:block}.manager-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}.manager-stat{background:#101a28;border:1px solid var(--border);border-radius:16px;padding:15px}.manager-stat span{display:block;color:var(--muted);font-size:13px}.manager-stat strong{display:block;font-size:25px;margin-top:7px}.manager-section{background:#101a28;border:1px solid var(--border);border-radius:16px;padding:16px;margin-top:13px}.manager-section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:11px}.manager-section h2{margin:0;font-size:19px}.manager-add{width:auto;font-size:15px;padding:10px 13px;border-radius:10px}.manager-table-wrap{overflow:auto;border:1px solid var(--border);border-radius:12px}.manager-table{width:100%;border-collapse:collapse;min-width:650px;background:#0a121d;font-size:14px}.manager-table th,.manager-table td{padding:11px;border-bottom:1px solid #243145;text-align:left}.manager-table th{color:var(--muted);font-size:11px;text-transform:uppercase}.manager-delete{width:auto;background:#3b1920;color:#ff8d8d;font-size:12px;padding:7px 9px;border-radius:8px}.manager-empty{text-align:center!important;color:var(--muted);padding:25px!important}.manager-form{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.manager-field label{display:block;color:var(--muted);font-size:12px;margin:0 0 5px}.manager-field input,.manager-field select{font-size:16px;padding:12px;margin:0;border-radius:10px}.manager-form-actions{grid-column:1/-1;display:flex;justify-content:flex-end;gap:8px;margin-top:5px}.manager-form-actions button{width:auto;font-size:15px;padding:10px 14px;border-radius:9px}.manager-cancel{background:transparent;color:var(--muted);border:1px solid var(--border)}.manager-form-card{display:none}.manager-form-card.open{display:block}
 @media print{body{background:#fff;color:#000}.wrap{max-width:100%;padding:10px}.login-card,.search-row,#result,.info,.logout,footer,#status,.actions:not(.print-actions){display:none!important}.card,.order-card{border:0;background:#fff;color:#000;padding:0}.print-area-title{display:block;color:#000;text-align:center}.order-table th,.order-table td{border-bottom:1px solid #ccc}.total-line{color:#000}}
@@ -73,7 +83,24 @@ footer{text-align:center;margin-top:30px}.phone-link{color:var(--gold);font-weig
     <input id="passwordInput" type="password" placeholder="Password" autocomplete="current-password" />
     <button class="login-btn" onclick="login()">Login</button>
     <p id="loginMessage" class="status"></p>
-    <div class="login-help">Need help to login? Call or text Niko Auto Core USA<br><a href="tel:+14694222777">Phone: (469) 422-2777</a></div>
+    <button type="button" class="request-access-btn" onclick="toggleAccessRequest(true)">Request Login Access</button>
+    <div id="accessRequest" class="access-request hidden">
+      <h2>Request Login Access</h2>
+      <p class="request-intro">Enter your email to request an account. A phone number is not required.</p>
+      <label for="requestName">Your name</label>
+      <input id="requestName" autocomplete="name" placeholder="Full name" />
+      <label for="requestCompany">Company name</label>
+      <input id="requestCompany" autocomplete="organization" placeholder="Business or company" />
+      <label for="requestEmail">Email address</label>
+      <input id="requestEmail" type="email" autocomplete="email" inputmode="email" placeholder="name@example.com" />
+      <label for="requestPhone">Phone number <span class="optional">(optional)</span></label>
+      <input id="requestPhone" type="tel" autocomplete="tel" inputmode="tel" placeholder="Optional" />
+      <button type="button" class="request-send" onclick="sendAccessRequest()">Send Access Request</button>
+      <button type="button" class="request-cancel" onclick="toggleAccessRequest(false)">Cancel</button>
+      <p id="requestMessage" class="status"></p>
+      <p class="request-privacy">Your information is used only to respond to your login request.</p>
+    </div>
+    <div class="login-help">Already requested access? You may also call or text Niko Auto Core USA<br><a href="tel:+14694222777">Phone: (469) 422-2777</a></div>
     <div class="login-note">Prices are not hedged. Confirm before sale.</div>
   </section>
 
@@ -84,7 +111,7 @@ footer{text-align:center;margin-top:30px}.phone-link{color:var(--gold);font-weig
       <input id="searchInput" placeholder="TYPE CONVERTER CODE..." autocomplete="off" />
       <button onclick="searchCode()">Search</button>
     </div>
-    <p id="status" class="status">Loading NIKO_Master_PPM_Catalogue.xlsx...</p>
+    <p id="status" class="status">Loading Live_Market_Price.xlsx...</p>
     <div id="result" class="result">Type converter code to search.</div>
     <div class="manual-add">
       <input id="manualCodeInput" placeholder="EXTRA CODE TO ORDER" autocomplete="off" />
@@ -122,9 +149,10 @@ footer{text-align:center;margin-top:30px}.phone-link{color:var(--gold);font-weig
         <div class="manager-stat"><span>Expected Value</span><strong id="bmValue">$0</strong></div>
         <div class="manager-stat"><span>Expected Profit</span><strong id="bmProfit" style="color:var(--green)">$0</strong></div>
         <div class="manager-stat"><span>Converters in Stock</span><strong id="bmStock" class="gold">0</strong></div>
-        <div class="manager-stat"><span>Total Platinum</span><strong id="bmPtOz" class="gold">0.0000 oz</strong></div>
-        <div class="manager-stat"><span>Total Palladium</span><strong id="bmPdOz" class="gold">0.0000 oz</strong></div>
-        <div class="manager-stat"><span>Total Rhodium</span><strong id="bmRhOz" class="gold">0.0000 oz</strong></div>
+        <div class="manager-stat"><span>Total Pt</span><strong id="bmPtOz" class="gold">0.000 oz</strong></div>
+        <div class="manager-stat"><span>Total Pd</span><strong id="bmPdOz" class="gold">0.000 oz</strong></div>
+        <div class="manager-stat"><span>Total Rh</span><strong id="bmRhOz" class="gold">0.000 oz</strong></div>
+        <div class="manager-stat"><span>Biscuit Weight</span><strong id="bmPgmWeight" class="gold">0 g</strong></div>
       </div>
       <div class="manager-section"><div class="manager-section-head"><h2>Recent Purchases</h2><button class="manager-add" onclick="showManagerForm('purchase')">+ Add Purchase</button></div><div class="manager-table-wrap"><table class="manager-table"><thead><tr><th>Date</th><th>Customer</th><th>Serial</th><th>Paid</th><th>Value</th><th>Profit</th></tr></thead><tbody id="bmRecentRows"></tbody></table></div></div>
     </div>
@@ -134,12 +162,11 @@ footer{text-align:center;margin-top:30px}.phone-link{color:var(--gold);font-weig
         <div class="manager-field"><label>Date</label><input id="bmPDate" type="date" required></div><div class="manager-field"><label>Customer</label><select id="bmPCustomer" required></select></div>
         <div class="manager-field"><label>Converter Serial — type to search live prices</label><input id="bmPSerial" list="bmSerialSuggestions" autocomplete="off" required><datalist id="bmSerialSuggestions"></datalist></div><div class="manager-field"><label>Quantity</label><input id="bmPQty" type="number" min="1" value="1" required></div>
         <div class="manager-field"><label>Total Paid ($)</label><input id="bmPCost" type="number" min="0" step=".01" required></div><div class="manager-field"><label>Estimated Value ($)</label><input id="bmPValue" type="number" min="0" step=".01" required></div>
-        <div class="manager-field"><label>Weight (grams)</label><input id="bmPWeight" type="number" min="0"></div><div class="manager-field"><label>Pt oz (total)</label><input id="bmPPtOz" readonly></div>
-        <div class="manager-field"><label>Pd oz (total)</label><input id="bmPPdOz" readonly></div><div class="manager-field"><label>Rh oz (total)</label><input id="bmPRhOz" readonly></div>
-        <div class="manager-field"><label>Notes</label><input id="bmPNotes"></div>
+        <div class="manager-field"><label>Weight (grams)</label><input id="bmPWeight" type="number" min="0"></div><div class="manager-field"><label>Notes</label><input id="bmPNotes"></div>
+        <div class="manager-field" style="grid-column:1/-1"><label>Estimated PGM from database</label><div id="bmPgmPreview" class="info" style="margin-top:0;padding:12px;font-size:15px">Enter a converter serial to load Pt, Pd and Rh.</div></div>
         <div class="manager-form-actions"><button type="button" class="manager-cancel" onclick="hideManagerForms()">Cancel</button><button>Save Purchase</button></div>
       </form></div>
-      <div class="manager-section"><div class="manager-section-head"><h2>Converter Purchases</h2><button class="manager-add" onclick="showManagerForm('purchase')">+ Add Purchase</button></div><div class="manager-table-wrap"><table class="manager-table"><thead><tr><th>Date</th><th>Customer</th><th>Serial</th><th>Qty</th><th>Pt oz</th><th>Pd oz</th><th>Rh oz</th><th>Paid</th><th>Value</th><th>Profit</th><th></th></tr></thead><tbody id="bmPurchaseRows"></tbody></table></div></div>
+      <div class="manager-section"><div class="manager-section-head"><h2>Converter Purchases</h2><button class="manager-add" onclick="showManagerForm('purchase')">+ Add Purchase</button></div><div class="manager-table-wrap"><table class="manager-table"><thead><tr><th>Date</th><th>Customer</th><th>Serial</th><th>Qty</th><th>Paid</th><th>Value</th><th>Profit</th><th></th></tr></thead><tbody id="bmPurchaseRows"></tbody></table></div></div>
     </div>
 
     <div id="managerCustomers" class="manager-page">
@@ -182,6 +209,7 @@ let loginDeadline = 0;
 const LOGIN_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
 let loggedInDiscount = 0;
 let exactPriceMap = new Map();
+let pgmMap = new Map();
 let lastExcelSignature = "";
 let lastTypingAt = 0;
 let activeAppUser = null;
@@ -218,6 +246,49 @@ async function loadUsers(){
   const res = await fetch("users.json?cache=" + Date.now());
   if(!res.ok) throw new Error("users.json not found");
   users = await res.json();
+}
+
+function toggleAccessRequest(show){
+  const panel = document.getElementById("accessRequest");
+  panel.classList.toggle("hidden", !show);
+  document.getElementById("requestMessage").textContent = "";
+  if(show) setTimeout(() => document.getElementById("requestName").focus(), 50);
+}
+
+function sendAccessRequest(){
+  const name = document.getElementById("requestName").value.trim();
+  const company = document.getElementById("requestCompany").value.trim();
+  const email = document.getElementById("requestEmail").value.trim();
+  const phone = document.getElementById("requestPhone").value.trim();
+  const msg = document.getElementById("requestMessage");
+
+  if(!name || !company || !email){
+    msg.innerHTML = '<span class="error">Please enter your name, company and email.</span>';
+    return;
+  }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    msg.innerHTML = '<span class="error">Please enter a valid email address.</span>';
+    return;
+  }
+
+  const subject = "Niko Auto Core - Login Access Request";
+  const body = [
+    "Hello Niko Auto Core USA,",
+    "",
+    "I would like to request login access to the Niko Auto Core price app.",
+    "",
+    "Name: " + name,
+    "Company: " + company,
+    "Email: " + email,
+    "Phone: " + (phone || "Not provided"),
+    "",
+    "Please send my login information to the email address above.",
+    "",
+    "Thank you."
+  ].join("\n");
+
+  msg.textContent = "Opening your email app...";
+  window.location.href = "mailto:nikoautocore2@gmail.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
 }
 
 async function login(){
@@ -267,9 +338,35 @@ function showSearch(user){
   document.getElementById("managerLaunchBtn").style.display = canManage ? "block" : "none";
 
   loadExcel();
+  loadPgmExcel();
   loadOrder();
   renderOrder();
   startLoginTimer();
+}
+
+async function loadPgmExcel(){
+  if(pgmMap.size) return;
+  try{
+    const res = await fetch("Niko_ppm_207.xlsx?cache=" + Date.now(), {cache:"no-store"});
+    if(!res.ok) throw new Error("PGM database not found");
+    const wb = XLSX.read(await res.arrayBuffer(), {type:"array", cellDates:false});
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(ws, {header:1, raw:true, defval:""});
+    const next = new Map();
+    for(let r = 1; r < rows.length; r++){
+      const row = rows[r] || [];
+      const code = String(row[0] ?? "").trim();
+      const weight = Number(row[1]);
+      const ptPpm = Number(row[2]);
+      const pdPpm = Number(row[3]);
+      const rhPpm = Number(row[4]);
+      if(!code || !Number.isFinite(weight) || weight <= 0) continue;
+      next.set(norm(code), {code, weight, ptPpm:Number.isFinite(ptPpm)?ptPpm:0, pdPpm:Number.isFinite(pdPpm)?pdPpm:0, rhPpm:Number.isFinite(rhPpm)?rhPpm:0});
+    }
+    pgmMap = next;
+    calculateManagerPurchase();
+    renderBusinessManager();
+  }catch(e){ console.warn(e.message); }
 }
 
 function startLoginTimer(){
@@ -303,7 +400,7 @@ function logout(){
 async function loadExcel(force = false){
   if(priceRows.length && !force) return;
   try{
-    const res = await fetch("NIKO_Master_PPM_Catalogue.xlsx?cache=" + Date.now(), {cache:"no-store"});
+    const res = await fetch("Live_Market_Price.xlsx?cache=" + Date.now(), {cache:"no-store"});
     if(!res.ok) throw new Error("Excel file not found.");
 
     // If the server says the Excel file is unchanged, do not parse it again.
@@ -325,17 +422,13 @@ async function loadExcel(force = false){
 
     const nextRows = [];
     const nextExactMap = new Map();
-    // Master catalogue headers are on Excel row 7; data begins on row 8.
-    for(let r = 7; r < rows.length; r++){
+    for(let r = 21; r < rows.length; r++){
       const row = rows[r] || [];
       const code = String(row[0] ?? "").trim();   // Column A
-      const price = String(row[10] ?? "").trim(); // Column K: Live Value ($)
-      const ptOz = Number(String(row[7] ?? "").replace(/,/g,"")) || 0;  // Column H
-      const pdOz = Number(String(row[8] ?? "").replace(/,/g,"")) || 0;  // Column I
-      const rhOz = Number(String(row[9] ?? "").replace(/,/g,"")) || 0;  // Column J
-      if(code && price && code.toLowerCase() !== "serial code"){
+      const price = String(row[1] ?? "").trim();  // Column B
+      if(code && price && code.toLowerCase() !== "code"){
         const normCode = norm(code);
-        const item = {code, price, normCode, ptOz, pdOz, rhOz};
+        const item = {code, price, normCode};
         nextRows.push(item);
         if(!nextExactMap.has(normCode)) nextExactMap.set(normCode, item);
       }
@@ -344,13 +437,12 @@ async function loadExcel(force = false){
     priceRows = nextRows;
     exactPriceMap = nextExactMap;
     if(signature) lastExcelSignature = signature;
-    renderBusinessManager();
 
     document.getElementById("status").textContent =
       `Ready: ${priceRows.length.toLocaleString()} prices loaded.`;
   }catch(e){
     document.getElementById("status").textContent =
-      "Could not load NIKO_Master_PPM_Catalogue.xlsx. Make sure file name is exact.";
+      "Could not load Live_Market_Price.xlsx. Make sure file name is exact.";
     document.getElementById("result").innerHTML = `<span class="small">${e.message}</span>`;
   }
 }
@@ -620,23 +712,37 @@ function updateManagerSerialSearch(){
 function calculateManagerPurchase(){
   const serial = document.getElementById("bmPSerial").value;
   const item = exactPriceMap.get(norm(serial));
-  if(!item){
-    document.getElementById("bmPPtOz").value = "";
-    document.getElementById("bmPPdOz").value = "";
-    document.getElementById("bmPRhOz").value = "";
-    return;
-  }
   const qty = Math.max(1, Number(document.getElementById("bmPQty").value) || 1);
-  const liveUnitPrice = priceNumber(item.price);
-  const estimated = Math.round(liveUnitPrice * qty);
-  const customerId = Number(document.getElementById("bmPCustomer").value);
-  const customer = bmData.customers.find(c => c.id === customerId);
-  const discount = Math.max(0, Math.min(100, Number(customer?.discount || 0)));
-  document.getElementById("bmPValue").value = estimated;
-  document.getElementById("bmPCost").value = Math.round(estimated * (1 - discount / 100));
-  document.getElementById("bmPPtOz").value = (Number(item.ptOz || 0) * qty).toFixed(4);
-  document.getElementById("bmPPdOz").value = (Number(item.pdOz || 0) * qty).toFixed(4);
-  document.getElementById("bmPRhOz").value = (Number(item.rhOz || 0) * qty).toFixed(4);
+  if(item){
+    const liveUnitPrice = priceNumber(item.price);
+    const estimated = Math.round(liveUnitPrice * qty);
+    const customerId = Number(document.getElementById("bmPCustomer").value);
+    const customer = bmData.customers.find(c => c.id === customerId);
+    const discount = Math.max(0, Math.min(100, Number(customer?.discount || 0)));
+    document.getElementById("bmPValue").value = estimated;
+    document.getElementById("bmPCost").value = Math.round(estimated * (1 - discount / 100));
+  }
+  const pgm = pgmMap.get(norm(serial));
+  const preview = document.getElementById("bmPgmPreview");
+  if(pgm){
+    document.getElementById("bmPWeight").value = Math.round(pgm.weight * qty * 100) / 100;
+    const ptG = pgm.weight * pgm.ptPpm / 1000000 * qty;
+    const pdG = pgm.weight * pgm.pdPpm / 1000000 * qty;
+    const rhG = pgm.weight * pgm.rhPpm / 1000000 * qty;
+    preview.innerHTML = `<b class="gold">Database match:</b> Pt ${ptG.toFixed(3)} g (${(ptG/31.1034768).toFixed(4)} oz) &nbsp; Pd ${pdG.toFixed(3)} g (${(pdG/31.1034768).toFixed(4)} oz) &nbsp; Rh ${rhG.toFixed(3)} g (${(rhG/31.1034768).toFixed(4)} oz)`;
+  }else{
+    preview.textContent = pgmMap.size ? "No PGM record found for this serial." : "Loading PGM database...";
+  }
+}
+
+function bmPurchasePgm(p){
+  if(Number.isFinite(Number(p.ptGrams)) || Number.isFinite(Number(p.pdGrams)) || Number.isFinite(Number(p.rhGrams))){
+    return {pt:Number(p.ptGrams)||0, pd:Number(p.pdGrams)||0, rh:Number(p.rhGrams)||0, weight:Number(p.weight)||0};
+  }
+  const match = pgmMap.get(norm(p.serial));
+  const qty = Math.max(1, Number(p.qty)||1);
+  if(!match) return {pt:0,pd:0,rh:0,weight:Number(p.weight)||0};
+  return {pt:match.weight*match.ptPpm/1000000*qty, pd:match.weight*match.pdPpm/1000000*qty, rh:match.weight*match.rhPpm/1000000*qty, weight:match.weight*qty};
 }
 
 function openBusinessManager(){
@@ -684,36 +790,23 @@ function hideManagerForms(){
 }
 
 function bmPurchaseRows(items, withActions){
-  if(!items.length) return `<tr><td class="manager-empty" colspan="${withActions ? 11 : 6}">No purchases yet</td></tr>`;
-  return items.map(p => {
-    const pt = bmPurchasePgm(p,"ptOz");
-    const pd = bmPurchasePgm(p,"pdOz");
-    const rh = bmPurchasePgm(p,"rhOz");
-    return `<tr><td>${esc(p.date)}</td><td>${esc(bmCustomerName(p.customerId))}</td><td><b class="gold">${esc(p.serial)}</b></td>${withActions ? `<td>${p.qty}</td><td>${pt.toFixed(4)}</td><td>${pd.toFixed(4)}</td><td>${rh.toFixed(4)}</td>` : ""}<td>${bmMoney(p.cost)}</td><td>${bmMoney(p.value)}</td><td style="color:var(--green)">${bmMoney(Number(p.value)-Number(p.cost))}</td>${withActions ? `<td><button class="manager-delete" onclick="deleteBusinessItem('purchases',${p.id})">Delete</button></td>` : ""}</tr>`;
-  }).join("");
-}
-
-function bmPurchasePgm(p, field){
-  const item = exactPriceMap.get(norm(p.serial));
-  const qty = Math.max(1, Number(p.qty || 1));
-  if(item) return Number(item[field] || 0) * qty;
-  return Number(p[field] || 0);
+  if(!items.length) return `<tr><td class="manager-empty" colspan="${withActions ? 8 : 6}">No purchases yet</td></tr>`;
+  return items.map(p => `<tr><td>${esc(p.date)}</td><td>${esc(bmCustomerName(p.customerId))}</td><td><b class="gold">${esc(p.serial)}</b></td>${withActions ? `<td>${p.qty}</td>` : ""}<td>${bmMoney(p.cost)}</td><td>${bmMoney(p.value)}</td><td style="color:var(--green)">${bmMoney(Number(p.value)-Number(p.cost))}</td>${withActions ? `<td><button class="manager-delete" onclick="deleteBusinessItem('purchases',${p.id})">Delete</button></td>` : ""}</tr>`).join("");
 }
 
 function renderBusinessManager(){
   const cost = bmData.purchases.reduce((s,p) => s + Number(p.cost || 0), 0);
   const value = bmData.purchases.reduce((s,p) => s + Number(p.value || 0), 0);
   const qty = bmData.purchases.reduce((s,p) => s + Number(p.qty || 0), 0);
-  const ptOz = bmData.purchases.reduce((s,p) => s + bmPurchasePgm(p,"ptOz"), 0);
-  const pdOz = bmData.purchases.reduce((s,p) => s + bmPurchasePgm(p,"pdOz"), 0);
-  const rhOz = bmData.purchases.reduce((s,p) => s + bmPurchasePgm(p,"rhOz"), 0);
+  const pgm = bmData.purchases.reduce((t,p) => { const m=bmPurchasePgm(p); t.pt+=m.pt; t.pd+=m.pd; t.rh+=m.rh; t.weight+=m.weight; return t; }, {pt:0,pd:0,rh:0,weight:0});
   document.getElementById("bmCost").textContent = bmMoney(cost);
   document.getElementById("bmValue").textContent = bmMoney(value);
   document.getElementById("bmProfit").textContent = bmMoney(value-cost);
   document.getElementById("bmStock").textContent = qty.toLocaleString();
-  document.getElementById("bmPtOz").textContent = ptOz.toFixed(4) + " oz";
-  document.getElementById("bmPdOz").textContent = pdOz.toFixed(4) + " oz";
-  document.getElementById("bmRhOz").textContent = rhOz.toFixed(4) + " oz";
+  document.getElementById("bmPtOz").textContent = (pgm.pt/31.1034768).toFixed(3) + " oz";
+  document.getElementById("bmPdOz").textContent = (pgm.pd/31.1034768).toFixed(3) + " oz";
+  document.getElementById("bmRhOz").textContent = (pgm.rh/31.1034768).toFixed(3) + " oz";
+  document.getElementById("bmPgmWeight").textContent = pgm.weight.toLocaleString("en-US", {maximumFractionDigits:1}) + " g";
   document.getElementById("bmRecentRows").innerHTML = bmPurchaseRows(bmData.purchases.slice(0,5), false);
   document.getElementById("bmPurchaseRows").innerHTML = bmPurchaseRows(bmData.purchases, true);
   document.getElementById("bmPCustomer").innerHTML = bmData.customers.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join("");
@@ -747,7 +840,10 @@ function updateBusinessCustomerDiscount(id,value){
 document.getElementById("bmPurchaseForm").addEventListener("submit", e => {
   e.preventDefault();
   if(!bmData.customers.length){ alert("Add a customer first."); managerGoTo("managerCustomers"); showManagerForm("customer"); return; }
-  bmData.purchases.unshift({id:Date.now(), date:document.getElementById("bmPDate").value, customerId:Number(document.getElementById("bmPCustomer").value), serial:document.getElementById("bmPSerial").value.trim().toUpperCase(), qty:Number(document.getElementById("bmPQty").value), cost:Number(document.getElementById("bmPCost").value), value:Number(document.getElementById("bmPValue").value), weight:Number(document.getElementById("bmPWeight").value), ptOz:Number(document.getElementById("bmPPtOz").value || 0), pdOz:Number(document.getElementById("bmPPdOz").value || 0), rhOz:Number(document.getElementById("bmPRhOz").value || 0), notes:document.getElementById("bmPNotes").value.trim()});
+  const serial = document.getElementById("bmPSerial").value.trim().toUpperCase();
+  const qty = Math.max(1, Number(document.getElementById("bmPQty").value) || 1);
+  const metal = pgmMap.get(norm(serial));
+  bmData.purchases.unshift({id:Date.now(), date:document.getElementById("bmPDate").value, customerId:Number(document.getElementById("bmPCustomer").value), serial, qty, cost:Number(document.getElementById("bmPCost").value), value:Number(document.getElementById("bmPValue").value), weight:Number(document.getElementById("bmPWeight").value), ptGrams:metal ? metal.weight*metal.ptPpm/1000000*qty : 0, pdGrams:metal ? metal.weight*metal.pdPpm/1000000*qty : 0, rhGrams:metal ? metal.weight*metal.rhPpm/1000000*qty : 0, notes:document.getElementById("bmPNotes").value.trim()});
   e.target.reset(); hideManagerForms(); saveBusinessData();
 });
 
