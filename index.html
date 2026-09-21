@@ -278,8 +278,22 @@ function sendAccessRequest(){
     "Phone: " + (phone || "Not provided"), "",
     "Please send my login information to the email address above.", "", "Thank you."
   ].join("\n");
-  msg.textContent = "Opening your email app...";
-  window.location.href = "mailto:nikoautocore2@gmail.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+  // Android WebView-safe request: copy the completed request instead of launching mailto:.
+  // This prevents the app from crashing when no compatible email handler is available.
+  const requestText = subject + "\n\n" + body;
+  const finishRequest = () => {
+    msg.innerHTML = '<span style="color:var(--green);font-weight:800">Request ready. Please call or text Niko Auto Core USA at (469) 422-2777 and paste the copied request.</span>';
+  };
+
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(requestText).then(finishRequest).catch(() => {
+      window.prompt("Copy your login access request:", requestText);
+      finishRequest();
+    });
+  }else{
+    window.prompt("Copy your login access request:", requestText);
+    finishRequest();
+  }
 }
 
 async function login(){
